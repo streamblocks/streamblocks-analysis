@@ -10,7 +10,7 @@
     </parent>
     <artifactId>analysis-core</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>StreamBlocks analysis core</name>
+    <name>StreamBlocks analysis, core</name>
     <dependencies>
         <dependency>
             <groupId>se.lth.cs.tycho</groupId>
@@ -34,5 +34,4 @@
             <version>0.1</version>
         </dependency>
     </dependencies>
-
 </project>
