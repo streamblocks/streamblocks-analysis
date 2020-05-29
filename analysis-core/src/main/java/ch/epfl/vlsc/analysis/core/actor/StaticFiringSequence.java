@@ -33,28 +33,54 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package ch.epfl.vlsc.analysis.core.air;
 
-import java.util.Collection;
+package ch.epfl.vlsc.analysis.core.actor;
+
+import ch.epfl.vlsc.analysis.core.air.Action;
+import ch.epfl.vlsc.analysis.core.air.PortSignature;
+
+import java.util.List;
 
 /**
- * Represents an actor, for which the detailed implementation is available
- * (i.e. not an "external" actor): state variables, actions and fsm.
+ * Represents a static sequence of actor firings (represented as actions)
+ * in the form of a looped schedule:
+ * <p>
+ * L*(s1 ... sn), where L is the "looping factor" and s1 through sn are the
+ * "sub-sequences" (also StaticFiringSequences). The looped schedule represents
+ * L repetitions of the schedule, s1 ... sn.
+ * <p>
+ * The idea is that a repeated, static, sequence of firings be represented
+ * in a compact manner -even for very large looping factors.
+ * <p>
+ * A StaticFiringSequence is thus defined recursively as an aggregation. At the bottom
+ * is a "trivial" firing sequence, whose flattened form consists of a single action.
  */
-public interface ActorImplementation extends ActorInstance {
+public interface StaticFiringSequence {
 
     /**
-     * @return the StateVariables of the actor
+     * @return true for "trivial" StaticFiringSequences (whose flattened form is a single firing)
      */
-    Collection<? extends StateVariable> getStateVariables();
+    boolean isTrivial();
 
     /**
-     * @return the Actions of the actor
+     * @return the looping factor, L, the number of times that the sub-sequences are repeated.
      */
-    Collection<? extends Action> getActions();
+    int getLoopingFactor();
 
     /**
-     * @return the Schedule (fsm) of the actor
+     * @return the subsequences s1, s2, ..., sn (null for "trivial" sequences)
      */
-    ActorSchedule getSchedule();
+    List<? extends StaticFiringSequence> getSubSequences();
+
+    /**
+     * @return the flat sequence of actor firings (represented as actions):
+     * each subsequence s1, s2, ..., sn flattened and everything repeated L times (the looping factor).
+     */
+    List<? extends Action> getFlatSequence();
+
+    /**
+     * @return the total consumption/production rates of the entire sequence
+     * (adding rates of the subsequences and taking everything times L, the looping factor).
+     */
+    PortSignature getPortSignature();
 }

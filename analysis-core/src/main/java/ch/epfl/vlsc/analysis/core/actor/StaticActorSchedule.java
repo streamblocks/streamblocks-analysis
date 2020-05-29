@@ -33,28 +33,45 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package ch.epfl.vlsc.analysis.core.air;
 
-import java.util.Collection;
+package ch.epfl.vlsc.analysis.core.actor;
 
-/**
- * Represents an actor, for which the detailed implementation is available
- * (i.e. not an "external" actor): state variables, actions and fsm.
- */
-public interface ActorImplementation extends ActorInstance {
+public class StaticActorSchedule {
 
-    /**
-     * @return the StateVariables of the actor
-     */
-    Collection<? extends StateVariable> getStateVariables();
+    private final StaticFiringSequence mTransientPhase;
+    private final StaticFiringSequence mRepeatedPhase;
 
-    /**
-     * @return the Actions of the actor
-     */
-    Collection<? extends Action> getActions();
+
+    public StaticActorSchedule(StaticFiringSequence transientPhase, StaticFiringSequence repeatedPhase) {
+        mTransientPhase = transientPhase;
+        mRepeatedPhase = repeatedPhase;
+    }
 
     /**
-     * @return the Schedule (fsm) of the actor
+     * @return true if the actor has a distinct initial/transient phase
      */
-    ActorSchedule getSchedule();
+    public boolean hasTransientPhase() {
+        return mTransientPhase != null;
+    }
+
+    /**
+     * @return the StaticFiringSequence of a possible initial/transient phase
+     */
+    public StaticFiringSequence getTransientPhase() {
+        return mTransientPhase;
+    }
+
+    /**
+     * @return true if the actor executes indefinitely (false if the number of firings is fixed/bounded)
+     */
+    public boolean hasRepeatedPhase() {
+        return mRepeatedPhase != null;
+    }
+
+    /**
+     * @return the StaticFiringSequence, which corresponds to one period of a possible repeated phase.
+     */
+    public StaticFiringSequence getRepeatedPhase() {
+        return mRepeatedPhase;
+    }
 }

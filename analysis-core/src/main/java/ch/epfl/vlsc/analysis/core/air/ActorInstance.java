@@ -39,9 +39,10 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface ActorInstance {
+
     /**
      * @return a descriptive name of the actor instance,
-     * which is unique within the actor network
+     *         which is unique within the actor network
      */
     String getInstanceName();
 
@@ -74,7 +75,7 @@ public interface ActorInstance {
 
     /**
      * @return the ActorImplementation, additional implementation details, if known
-     * (null if the actor is external/has an unknown implementation)
+     *         (null if the actor is external/has an unknown implementation)
      */
     ActorImplementation getImplementation();
 
@@ -92,9 +93,9 @@ public interface ActorInstance {
 
     /**
      * @param annotation name
-     * @param argId      - argument id
+     * @param argId - argument id
      * @return the value of the argument id if it exists in the map of the annotation.
-     * null if the argument id does not exist in the map of the annotation.
+     * 			null if the argument id does not exist in the map of the annotation.
      */
     String getAnnotationArgumentValue(String annotation, String argId);
 }

@@ -33,28 +33,58 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package ch.epfl.vlsc.analysis.core.air;
 
-import java.util.Collection;
+package ch.epfl.vlsc.analysis.core.adapter;
+
+
+import ch.epfl.vlsc.analysis.core.air.InputLookAhead;
+import ch.epfl.vlsc.analysis.core.air.PortInstance;
 
 /**
- * Represents an actor, for which the detailed implementation is available
- * (i.e. not an "external" actor): state variables, actions and fsm.
+ * A (port,index) pair that represents input look-ahead.
+ * Used in guards of Dynamic Dataflow actors (a.k.a pinPeek).
  */
-public interface ActorImplementation extends ActorInstance {
+public class VanillaInputLookAhead implements InputLookAhead {
+    private final PortInstance mPort;
+    private final int mIndex;
+
+    public VanillaInputLookAhead(PortInstance port, int index) {
+        mPort = port;
+        mIndex = index;
+    }
 
     /**
-     * @return the StateVariables of the actor
+     * @return the (input) port that receives the input stream,
+     * in which we look ahead.
      */
-    Collection<? extends StateVariable> getStateVariables();
+    public PortInstance getPort() {
+        return mPort;
+    }
 
     /**
-     * @return the Actions of the actor
+     * @return the look-ahead index: 0 means next token, 1 means second next etc.
      */
-    Collection<? extends Action> getActions();
+    public int getIndex() {
+        return mIndex;
+    }
 
-    /**
-     * @return the Schedule (fsm) of the actor
-     */
-    ActorSchedule getSchedule();
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof InputLookAhead) {
+            InputLookAhead ila = (InputLookAhead) obj;
+            return mPort.equals(ila.getPort()) && mIndex == ila.getIndex();
+        } else
+            return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return (999007 * mIndex) ^ mPort.hashCode();
+    }
+
+
+    @Override
+    public String toString() {
+        return mPort.getName() + "@" + mIndex;
+    }
 }

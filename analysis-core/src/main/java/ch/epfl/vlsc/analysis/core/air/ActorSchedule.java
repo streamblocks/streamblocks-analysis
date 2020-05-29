@@ -38,23 +38,17 @@ package ch.epfl.vlsc.analysis.core.air;
 import java.util.Collection;
 
 /**
- * Represents an actor, for which the detailed implementation is available
- * (i.e. not an "external" actor): state variables, actions and fsm.
+ * Represents a finite state machine with guards and actions on the transitions
  */
-public interface ActorImplementation extends ActorInstance {
+public interface ActorSchedule {
 
     /**
-     * @return the StateVariables of the actor
+     * @return the initial state
      */
-    Collection<? extends StateVariable> getStateVariables();
+    State getInitialState();
 
     /**
-     * @return the Actions of the actor
+     * @return the set of all states
      */
-    Collection<? extends Action> getActions();
-
-    /**
-     * @return the Schedule (fsm) of the actor
-     */
-    ActorSchedule getSchedule();
+    Collection<? extends State> getStates();
 }

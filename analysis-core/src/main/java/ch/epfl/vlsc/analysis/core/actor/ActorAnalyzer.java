@@ -33,28 +33,21 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package ch.epfl.vlsc.analysis.core.air;
 
-import java.util.Collection;
+package ch.epfl.vlsc.analysis.core.actor;
+
+
+import ch.epfl.vlsc.analysis.core.air.ActorImplementation;
 
 /**
- * Represents an actor, for which the detailed implementation is available
- * (i.e. not an "external" actor): state variables, actions and fsm.
+ * Interface to some analysis client that provides ActorAnalysis.
+ * The idea is that it should be possible to plug in such clients.
  */
-public interface ActorImplementation extends ActorInstance {
+public interface ActorAnalyzer {
 
     /**
-     * @return the StateVariables of the actor
+     * @param actor an actor with implementation
+     * @return analysis of the actor
      */
-    Collection<? extends StateVariable> getStateVariables();
-
-    /**
-     * @return the Actions of the actor
-     */
-    Collection<? extends Action> getActions();
-
-    /**
-     * @return the Schedule (fsm) of the actor
-     */
-    ActorSchedule getSchedule();
+    ActorAnalysis analyze(ActorImplementation actor);
 }

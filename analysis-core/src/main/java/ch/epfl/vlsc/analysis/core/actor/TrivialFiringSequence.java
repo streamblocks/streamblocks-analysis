@@ -33,28 +33,53 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package ch.epfl.vlsc.analysis.core.air;
 
-import java.util.Collection;
+package ch.epfl.vlsc.analysis.core.actor;
+
+import ch.epfl.vlsc.analysis.core.air.Action;
+import ch.epfl.vlsc.analysis.core.air.PortSignature;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Represents an actor, for which the detailed implementation is available
- * (i.e. not an "external" actor): state variables, actions and fsm.
+ * A "trivial" firing sequence, consisting of a single action firing.
  */
-public interface ActorImplementation extends ActorInstance {
+public class TrivialFiringSequence implements StaticFiringSequence {
 
-    /**
-     * @return the StateVariables of the actor
-     */
-    Collection<? extends StateVariable> getStateVariables();
+    private final Action mAction;
 
-    /**
-     * @return the Actions of the actor
-     */
-    Collection<? extends Action> getActions();
+    public TrivialFiringSequence(Action action) {
+        mAction = action;
+    }
 
-    /**
-     * @return the Schedule (fsm) of the actor
-     */
-    ActorSchedule getSchedule();
+    @Override
+    public boolean isTrivial() {
+        return true;
+    }
+
+    @Override
+    public int getLoopingFactor() {
+        return 1;
+    }
+
+    @Override
+    public List<? extends StaticFiringSequence> getSubSequences() {
+        return null; // No subsequences
+    }
+
+    @Override
+    public List<Action> getFlatSequence() {
+        return Collections.singletonList(mAction);
+    }
+
+    @Override
+    public PortSignature getPortSignature() {
+        return mAction.getPortSignature();
+    }
+
+    @Override
+    public String toString() {
+        return mAction.getName();
+    }
 }

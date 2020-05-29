@@ -33,28 +33,36 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package ch.epfl.vlsc.analysis.core.air;
 
-import java.util.Collection;
+package ch.epfl.vlsc.analysis.core.network;
 
-/**
- * Represents an actor, for which the detailed implementation is available
- * (i.e. not an "external" actor): state variables, actions and fsm.
- */
-public interface ActorImplementation extends ActorInstance {
+import ch.epfl.vlsc.analysis.core.actor.ConnectionAnalysis;
+import ch.epfl.vlsc.analysis.core.actor.GenericActorAnalysis;
+import ch.epfl.vlsc.analysis.core.actor.PortAnalysis;
+import ch.epfl.vlsc.analysis.core.air.ActorInstance;
+import ch.epfl.vlsc.analysis.core.air.Connection;
+import ch.epfl.vlsc.analysis.core.air.PortInstance;
 
-    /**
-     * @return the StateVariables of the actor
-     */
-    Collection<? extends StateVariable> getStateVariables();
+import java.util.List;
 
-    /**
-     * @return the Actions of the actor
-     */
-    Collection<? extends Action> getActions();
+public interface NetworkAnalysis {
 
-    /**
-     * @return the Schedule (fsm) of the actor
-     */
-    ActorSchedule getSchedule();
+	List<ActorInstance> getSingleRateStaticActors();
+
+	List<ActorInstance> getMultiRateStaticActors();
+
+	List<ActorInstance> getCycloStaticActors();
+
+	List<ActorInstance> getQuasiStaticActors();
+
+	List<ActorInstance> getDynamicActors();
+
+	List<ActorInstance> getUnclassifiedActors();
+
+	ConnectionAnalysis getConnectionAnalysis(Connection c);
+
+	GenericActorAnalysis getGenericActorAnalysis(ActorInstance a);
+
+	PortAnalysis getPortAnalysis(PortInstance p);
+
 }
