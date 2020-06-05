@@ -36,7 +36,8 @@
 
 package ch.epfl.vlsc.analysis.core.actor;
 
-import org.caltoopia.analysis.air.*;
+
+import ch.epfl.vlsc.analysis.core.air.*;
 
 import java.util.*;
 

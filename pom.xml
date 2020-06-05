@@ -12,7 +12,8 @@
 
     <modules>
         <module>analysis-core</module>
-        <module>analysis-classifier</module>
+        <module>cal-classifier</module>
+        <module>am-classifier</module>
     </modules>
 
     <properties>
