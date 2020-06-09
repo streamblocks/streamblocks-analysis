@@ -36,19 +36,21 @@ public class TychoGuard implements Guard {
         this.lookAheads = new HashSet<>();
         this.stateVariables = new HashSet<>();
 
-        InputAndStateVariableFinder stateVariableFinder = MultiJ.from(InputAndStateVariableFinder.class)
-                .bind("actorInstance").to(actorInstance)
-                .bind("stateVariables").to(stateVariables)
-                .bind("lookaheads").to(lookAheads)
-                .bind("stateVariableMap").to(stateVariableMap)
-                .bind("declarations").to(compilationTask.getModule(VariableDeclarations.key))
-                .bind("ports").to(compilationTask.getModule(Ports.key))
-                .bind("evalutor").to(compilationTask.getModule(ConstantEvaluator.key))
-                .instance();
+        if (!guards.isEmpty()) {
+            InputAndStateVariableFinder stateVariableFinder = MultiJ.from(InputAndStateVariableFinder.class)
+                    .bind("actorInstance").to(actorInstance)
+                    .bind("stateVariables").to(stateVariables)
+                    .bind("lookaheads").to(lookAheads)
+                    .bind("stateVariableMap").to(stateVariableMap)
+                    .bind("declarations").to(compilationTask.getModule(VariableDeclarations.key))
+                    .bind("ports").to(compilationTask.getModule(Ports.key))
+                    .bind("evalutor").to(compilationTask.getModule(ConstantEvaluator.key))
+                    .instance();
 
-        // -- Find State Variables and Lookaheads used in the guard
-        for (Expression expression : guards) {
-            stateVariableFinder.visit(expression);
+            // -- Find State Variables and Lookaheads used in the guard
+            for (Expression expression : guards) {
+                stateVariableFinder.visit(expression);
+            }
         }
     }
 
@@ -131,6 +133,11 @@ public class TychoGuard implements Guard {
         }
 
         return result;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return guards.isEmpty();
     }
 
     private UnionOfDisjointIntervals matchModeControlGuard(Expression expression) {

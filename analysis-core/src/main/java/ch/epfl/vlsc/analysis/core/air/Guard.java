@@ -85,4 +85,7 @@ public interface Guard {
     Map<InputLookAhead, UnionOfDisjointIntervals> matchScenarioAwareGuard();
 
     UnionOfDisjointIntervals getScenarioAwareGuardIntervals(InputLookAhead ila);
+
+    boolean isEmpty();
+
 }

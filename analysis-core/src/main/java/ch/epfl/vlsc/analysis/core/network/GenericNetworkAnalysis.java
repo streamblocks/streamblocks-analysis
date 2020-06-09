@@ -152,12 +152,12 @@ public class GenericNetworkAnalysis {
 	 * Returns the execution times of actions as a list. Call this method if
 	 * the actor is type annotated. Otherwise, use 'getExecutionTime'.
 	 *
-	 * @param ActorInstance a
+	 * @param actorInstance
 	 * @return the execution times of actions as a list
 	 */
-	public List<Integer> getAnnotatedExecutionTime(ActorInstance a) {
+	public List<Integer> getAnnotatedExecutionTime(ActorInstance actorInstance) {
 		List<Integer> executionTimes = new ArrayList<Integer>();
-		GenericActorAnalysis actorAnalysis = networkAnalysis.getGenericActorAnalysis(a);
+		GenericActorAnalysis actorAnalysis = networkAnalysis.getGenericActorAnalysis(actorInstance);
 		if (isSingleRateStaticDaflowGraph() || isMultiRateStaticDaflowGraph()) {
 			if (actorAnalysis.getExecutionTime().intValue() > 0)
 				//Take the actor annotation (if the actor has WCET annotation)

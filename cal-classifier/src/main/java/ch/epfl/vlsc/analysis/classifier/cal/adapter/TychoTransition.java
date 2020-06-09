@@ -29,7 +29,7 @@ public class TychoTransition implements Transition {
 
     @Override
     public boolean hasGuard() {
-        return action.hasGuard();
+        return !action.getGuard().isEmpty();
     }
 
     @Override

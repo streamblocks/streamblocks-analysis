@@ -4,6 +4,7 @@ import ch.epfl.vlsc.analysis.core.adapter.VanillaActorSchedule;
 import ch.epfl.vlsc.analysis.core.adapter.VanillaPortSignature;
 import ch.epfl.vlsc.analysis.core.air.*;
 import se.lth.cs.tycho.compiler.CompilationTask;
+import se.lth.cs.tycho.interp.*;
 import se.lth.cs.tycho.ir.decl.VarDecl;
 import se.lth.cs.tycho.ir.entity.cal.CalActor;
 import se.lth.cs.tycho.ir.entity.cal.InputPattern;
@@ -25,12 +26,14 @@ public class TychoActorImplementation extends TychoActorInstance implements Acto
     private final TychoActionPriorityRelation priorityRelation;
     private final ActorSchedule fsm;
     private final CompilationTask compilationTask;
+    private final BasicInterpreter interpreter;
 
     public TychoActorImplementation(CompilationTask compilationTask, Instance instance, CalActor calActor) {
         super(instance, calActor);
         this.compilationTask = compilationTask;
         this.actionMap = new HashMap<>();
         this.actionToTychoActionMap = new HashMap<>();
+        interpreter = new BasicInterpreter(compilationTask, 100);
         // -- Create state variables
         Map<String, StateVariable> stateVarMap = createStateVariables(calActor);
         stateVariables = new ArrayList<>(stateVarMap.values());
@@ -39,7 +42,8 @@ public class TychoActorImplementation extends TychoActorInstance implements Acto
         this.actions = new ArrayList<>();
         calActor.getActions().forEach(action -> {
             PortSignature portSignature = createPortSignature(action);
-            Guard guard = new TychoGuard(compilationTask, action.getGuards(), stateVarMap, this);
+            List<Expression> guards = action.getGuards();
+            Guard guard = new TychoGuard(compilationTask, guards, stateVarMap, this);
             TychoAction tychoAction = new TychoAction(action, portSignature, guard);
             actions.add(tychoAction);
             actionMap.put(action.getTag().toString(), tychoAction);
@@ -71,7 +75,9 @@ public class TychoActorImplementation extends TychoActorInstance implements Acto
             PortInstance portInstance = getPort(pattern.getPort().getName());
             int rate = pattern.getMatches().size();
             if (pattern.getRepeatExpr() != null) {
-                rate = rate * sneakyConstantFolding(pattern.getRepeatExpr());
+                Memory mem = new BasicMemory();
+                Environment env = new BasicEnvironment(mem);
+                rate = rate * (int) interpreter.evaluate(pattern.getRepeatExpr(), env).getLong();
             }
             portRates.put(portInstance, rate);
         }
@@ -80,7 +86,9 @@ public class TychoActorImplementation extends TychoActorInstance implements Acto
             PortInstance portInstance = getPort(outputExpression.getPort().getName());
             int rate = outputExpression.getExpressions().size();
             if (outputExpression.getRepeatExpr() != null) {
-                rate = rate * sneakyConstantFolding(outputExpression.getRepeatExpr());
+                Memory mem = new BasicMemory();
+                Environment env = new BasicEnvironment(mem);
+                rate = rate * (int) interpreter.evaluate(outputExpression.getRepeatExpr(), env).getLong();
             }
             portRates.put(portInstance, rate);
         }

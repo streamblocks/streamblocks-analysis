@@ -52,8 +52,7 @@ public class PriorityGraph {
                 new Edge(sourceVertex, targetVertex);
             }
         }
-        // TODO Finally add the actions that are used in the FSM,
-        // but not in any priority relation
+        // TODO: Finally add the actions that are used in the FSM but not in any priority relation
     }
 
     private void initIsPrefixOf() {

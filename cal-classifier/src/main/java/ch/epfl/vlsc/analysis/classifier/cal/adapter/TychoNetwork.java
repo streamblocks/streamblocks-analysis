@@ -35,8 +35,13 @@ public class TychoNetwork implements Network {
             GlobalEntityDecl entityDecl = globalNames.entityDecl(instance.getEntityName(), true);
             assert entityDecl.getEntity() instanceof CalActor;
             CalActor calActor = (CalActor) entityDecl.getEntity();
-            ActorInstance actorInstance = new TychoActorImplementation(compilationTask, instance, calActor);
-            actorInstanceMapping.put(instance, actorInstance);
+            if (!entityDecl.getExternal()) {
+                ActorInstance actorInstance = new TychoActorImplementation(compilationTask, instance, calActor);
+                actorInstanceMapping.put(instance, actorInstance);
+            } else {
+                ActorInstance actorInstance = new TychoActorInstance(instance, calActor);
+                actorInstanceMapping.put(instance, actorInstance);
+            }
         }
 
         // -- Create Connections

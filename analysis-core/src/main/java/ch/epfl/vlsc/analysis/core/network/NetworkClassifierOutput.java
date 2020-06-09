@@ -56,11 +56,11 @@ import java.util.Map;
 
 public class NetworkClassifierOutput {
 
-	protected Stream stream;
 	protected String outputFolder;
 
-	public NetworkClassifierOutput() {
-		outputFolder = "." + File.separator;
+	public NetworkClassifierOutput(String outputFolder) {
+
+		this.outputFolder = outputFolder;
 	}
 
 	public void print(GenericNetworkAnalysis analysis) {
