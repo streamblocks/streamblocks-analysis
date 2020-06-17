@@ -1,5 +1,6 @@
 package ch.epfl.vlsc.turnus.adapter;
 
+import ch.epfl.vlsc.turnus.adapter.external.ArtExternals;
 import se.lth.cs.tycho.attribute.GlobalNames;
 import se.lth.cs.tycho.attribute.Types;
 import se.lth.cs.tycho.compiler.CompilationTask;
@@ -18,6 +19,7 @@ import se.lth.cs.tycho.ir.network.Instance;
 import se.lth.cs.tycho.ir.type.TypeExpr;
 import se.lth.cs.tycho.type.*;
 import turnus.common.TurnusException;
+import turnus.common.io.Logger;
 import turnus.common.util.FileUtils;
 import turnus.model.dataflow.Type;
 import turnus.model.dataflow.*;
@@ -36,11 +38,13 @@ public class TurnusModelAdapter {
     private final Types types;
     private final GlobalNames globalNames;
     private final Map<String, CalActor> calActorMap;
+    private final Map<String, String> nameExternalActor;
 
     public TurnusModelAdapter(CompilationTask task, Versioner versioner) {
         this.task = task;
         this.versioner = versioner;
         this.calActorMap = new HashMap<>();
+        this.nameExternalActor = new HashMap<>();
         this.types = task.getModule(Types.key);
         this.globalNames = task.getModule(GlobalNames.key);
         this.network = createNetwork(task.getNetwork());
@@ -80,9 +84,14 @@ public class TurnusModelAdapter {
             }
 
             CalActor calActor = (CalActor) entityDecl.getEntity();
-            calActorMap.put(instance.getInstanceName(), calActor);
+            if (entityDecl.getExternal()) {
+                calActorMap.put(entityDecl.getName(), calActor);
+                nameExternalActor.put(instance.getInstanceName(), entityDecl.getName());
+            } else {
+                calActorMap.put(instance.getInstanceName(), calActor);
+            }
 
-            String className = actorQID.toString();
+            String className = actorQID.get().toString();
             ActorClass actorClass = network.getActorClass(className);
             // -- if the actor-class is not yet defined, create a new one
             if (actorClass == null) {
@@ -98,61 +107,75 @@ public class TurnusModelAdapter {
                 actorClass.setVersion(version);
             }
 
-            // -- Actor Instance
-            Actor actor = factory.createActor();
-            actor.setName(instance.getInstanceName());
-            actor.setActorClass(actorClass);
-            network.getActors().add(actor);
+            if (!entityDecl.getExternal()) {
+                // -- Actor Instance
+                Actor actor = factory.createActor();
+                actor.setName(instance.getInstanceName());
+                actor.setActorClass(actorClass);
 
-            // -- Actor Input Ports
-            for (PortDecl decl : calActor.getInputPorts()) {
-                Port port = factory.createPort();
-                port.setName(decl.getName());
-                actor.getInputPorts().add(port);
-            }
 
-            // -- Actor Output Ports
-            for (PortDecl decl : calActor.getOutputPorts()) {
-                Port port = factory.createPort();
-                port.setName(decl.getName());
-                actor.getOutputPorts().add(port);
-            }
-
-            // -- Actions
-            Set<se.lth.cs.tycho.ir.entity.cal.Action> allActions = new HashSet<>();
-            allActions.addAll(calActor.getActions());
-            allActions.addAll(calActor.getInitializers());
-            for (se.lth.cs.tycho.ir.entity.cal.Action tychoAction : allActions) {
-                Action action = factory.createAction();
-                action.setName(tychoAction.getTag().toString());
-                actor.getActions().add(action);
-
-                for (InputPattern pattern : tychoAction.getInputPatterns()) {
-                    Port port = actor.getInputPort(pattern.getPort().getName());
-                    action.getInputPorts().add(port);
+                // -- Actor Input Ports
+                for (PortDecl decl : calActor.getInputPorts()) {
+                    Port port = factory.createPort();
+                    port.setName(decl.getName());
+                    actor.getInputPorts().add(port);
                 }
 
-                for (OutputExpression output : tychoAction.getOutputExpressions()) {
-                    Port port = actor.getOutputPort(output.getPort().getName());
-                    action.getOutputPorts().add(port);
+                // -- Actor Output Ports
+                for (PortDecl decl : calActor.getOutputPorts()) {
+                    Port port = factory.createPort();
+                    port.setName(decl.getName());
+                    actor.getOutputPorts().add(port);
+                }
+
+                // -- State Variables
+                for (LocalVarDecl localVarDecl : calActor.getVarDecls()) {
+                    Variable stateVar = factory.createVariable();
+                    stateVar.setName(localVarDecl.getName());
+                    stateVar.setType(getTurnusType(localVarDecl.getType()));
+                    actor.getVariables().add(stateVar);
+                }
+
+                // -- Parameters Variables as State Variables
+                for (ParameterVarDecl parameterVarDecl : calActor.getValueParameters()) {
+                    Variable paramVar = factory.createVariable();
+                    paramVar.setName(parameterVarDecl.getName());
+                    paramVar.setType(getTurnusType(parameterVarDecl.getType()));
+                    actor.getVariables().add(paramVar);
+                }
+
+                // -- Actions
+                Set<se.lth.cs.tycho.ir.entity.cal.Action> allActions = new HashSet<>();
+                allActions.addAll(calActor.getActions());
+                allActions.addAll(calActor.getInitializers());
+                for (se.lth.cs.tycho.ir.entity.cal.Action tychoAction : allActions) {
+                    Action action = factory.createAction();
+                    action.setName(tychoAction.getTag().toString());
+                    actor.getActions().add(action);
+
+                    for (InputPattern pattern : tychoAction.getInputPatterns()) {
+                        Port port = actor.getInputPort(pattern.getPort().getName());
+                        action.getInputPorts().add(port);
+                    }
+
+                    for (OutputExpression output : tychoAction.getOutputExpressions()) {
+                        Port port = actor.getOutputPort(output.getPort().getName());
+                        action.getOutputPorts().add(port);
+                    }
+                }
+                // -- Add actor to network
+                network.getActors().add(actor);
+            } else {
+                String name = entityDecl.getName();
+                if (ArtExternals.externalActors.containsKey(name)) {
+                    Actor actor = ArtExternals.externalActors.get(name);
+                    actor.setActorClass(actorClass);
+                    network.getActors().add(actor);
+                } else {
+                    Logger.error("External actor : " + name + ", is not defined in the adapter.");
                 }
             }
 
-            // -- State Variables
-            for (LocalVarDecl localVarDecl : calActor.getVarDecls()) {
-                Variable stateVar = factory.createVariable();
-                stateVar.setName(localVarDecl.getName());
-                stateVar.setType(getTurnusType(localVarDecl.getType()));
-                actor.getVariables().add(stateVar);
-            }
-
-            // -- Parameters Variables as State Variables
-            for (ParameterVarDecl parameterVarDecl : calActor.getValueParameters()) {
-                Variable paramVar = factory.createVariable();
-                paramVar.setName(parameterVarDecl.getName());
-                paramVar.setType(getTurnusType(parameterVarDecl.getType()));
-                actor.getVariables().add(paramVar);
-            }
         }
 
         // -- FIFO Buffers
@@ -166,17 +189,34 @@ public class TurnusModelAdapter {
             String instanceTarget = target.getInstance().get();
             String portTarget = target.getPort();
 
-            Port tpSource = network.getActor(instanceSource).getOutputPort(portSource);
-            Port tpTarget = network.getActor(instanceTarget).getInputPort(portTarget);
+            Port tpSource;
+            Port tpTarget;
+            if (nameExternalActor.containsKey(instanceSource)) {
+                tpSource = network.getActor(nameExternalActor.get(instanceSource)).getOutputPort(portSource);
+            } else {
+                tpSource = network.getActor(instanceSource).getOutputPort(portSource);
+            }
+
+            if (nameExternalActor.containsKey(instanceTarget)) {
+                tpTarget = network.getActor(nameExternalActor.get(instanceTarget)).getInputPort(portTarget);
+            } else {
+                tpTarget = network.getActor(instanceTarget).getInputPort(portTarget);
+            }
 
             Buffer buffer = factory.createBuffer();
             buffer.setSource(tpSource);
             buffer.setTarget(tpTarget);
 
-            CalActor actor = calActorMap.get(instanceSource);
+            CalActor actor;
+
+            if (nameExternalActor.containsKey(instanceSource)) {
+                actor = calActorMap.get(nameExternalActor.get(instanceSource));
+            } else {
+                actor = calActorMap.get(instanceSource);
+            }
+
             buffer.setType(getOutputPortType(actor, portSource));
             network.getBuffers().add(buffer);
-
         }
 
         return network;

@@ -66,23 +66,26 @@ public class TurnusAdapterPhase implements Phase {
             directory.mkdirs();
         }
 
-        Configuration configuration = new Configuration();
-        configuration.setValue(CAL_PROJECT, task.getIdentifier().getLast().toString());
-        configuration.setValue(VERSIONER, DEFAULT_VERSIONER);
-        configuration.setValue(OUTPUT_DIRECTORY, targetPath.toFile());
-        configuration.setValue(COMPRESS_TRACE, false);
-        configuration.setValue(EXPORT_GANTT_CHART, false);
-        configuration.setValue(EXPORT_TRACE, true);
-
-
-        Logger.info("* QID: %s", task.getIdentifier().toString());
-        Logger.info("* Target Path: %s", targetPath.toAbsolutePath().toString());
-
         Path etracezPath = context.getConfiguration().get(TurnusAdapterPhase.etracezPath);
         if (!etracezPath.toFile().exists()) {
             Logger.error("Execution trace file does not exist: " + etracezPath.toAbsolutePath().toString());
             return null;
         }
+
+        Configuration configuration = new Configuration();
+        configuration.setValue(CAL_PROJECT, task.getIdentifier().getLast().toString());
+        configuration.setValue(VERSIONER, DEFAULT_VERSIONER);
+        configuration.setValue(OUTPUT_DIRECTORY, targetPath.toFile());
+        configuration.setValue(COMPRESS_TRACE, true);
+        configuration.setValue(EXPORT_GANTT_CHART, false);
+        configuration.setValue(BUFFER_SIZE_DEFAULT, 4096);
+        configuration.setValue(EXPORT_TRACE, true);
+
+
+        Logger.info("* QID: %s", task.getIdentifier().toString());
+        Logger.info("* Input etracez path: %s", etracezPath.toAbsolutePath().toString());
+        Logger.info("* Target path: %s", targetPath.toAbsolutePath().toString());
+
 
         try {
             Versioner versioner = new GitVersioner();
