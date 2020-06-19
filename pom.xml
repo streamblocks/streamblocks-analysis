@@ -14,6 +14,7 @@
         <module>analysis-core</module>
         <module>cal-classifier</module>
         <module>am-classifier</module>
+        <module>platform-turnus</module>
     </modules>
 
     <properties>

@@ -10,13 +10,13 @@ import se.lth.cs.tycho.ir.QID;
 import se.lth.cs.tycho.ir.decl.GlobalEntityDecl;
 import se.lth.cs.tycho.ir.decl.LocalVarDecl;
 import se.lth.cs.tycho.ir.decl.ParameterVarDecl;
+import se.lth.cs.tycho.ir.decl.VarDecl;
 import se.lth.cs.tycho.ir.entity.PortDecl;
 import se.lth.cs.tycho.ir.entity.cal.CalActor;
 import se.lth.cs.tycho.ir.entity.cal.InputPattern;
 import se.lth.cs.tycho.ir.entity.cal.OutputExpression;
 import se.lth.cs.tycho.ir.network.Connection;
 import se.lth.cs.tycho.ir.network.Instance;
-import se.lth.cs.tycho.ir.type.TypeExpr;
 import se.lth.cs.tycho.type.*;
 import turnus.common.TurnusException;
 import turnus.common.io.Logger;
@@ -85,8 +85,8 @@ public class TurnusModelAdapter {
 
             CalActor calActor = (CalActor) entityDecl.getEntity();
             if (entityDecl.getExternal()) {
-                calActorMap.put(entityDecl.getName(), calActor);
-                nameExternalActor.put(instance.getInstanceName(), entityDecl.getName());
+                calActorMap.put(entityDecl.getOriginalName(), calActor);
+                nameExternalActor.put(instance.getInstanceName(), entityDecl.getOriginalName());
             } else {
                 calActorMap.put(instance.getInstanceName(), calActor);
             }
@@ -131,16 +131,16 @@ public class TurnusModelAdapter {
                 // -- State Variables
                 for (LocalVarDecl localVarDecl : calActor.getVarDecls()) {
                     Variable stateVar = factory.createVariable();
-                    stateVar.setName(localVarDecl.getName());
-                    stateVar.setType(getTurnusType(localVarDecl.getType()));
+                    stateVar.setName(localVarDecl.getOriginalName());
+                    stateVar.setType(getTurnusType(localVarDecl));
                     actor.getVariables().add(stateVar);
                 }
 
                 // -- Parameters Variables as State Variables
                 for (ParameterVarDecl parameterVarDecl : calActor.getValueParameters()) {
                     Variable paramVar = factory.createVariable();
-                    paramVar.setName(parameterVarDecl.getName());
-                    paramVar.setType(getTurnusType(parameterVarDecl.getType()));
+                    paramVar.setName(parameterVarDecl.getOriginalName());
+                    paramVar.setType(getTurnusType(parameterVarDecl));
                     actor.getVariables().add(paramVar);
                 }
 
@@ -166,7 +166,7 @@ public class TurnusModelAdapter {
                 // -- Add actor to network
                 network.getActors().add(actor);
             } else {
-                String name = entityDecl.getName();
+                String name = entityDecl.getOriginalName();
                 if (ArtExternals.externalActors.containsKey(name)) {
                     Actor actor = ArtExternals.externalActors.get(name);
                     actor.setActorClass(actorClass);
@@ -225,14 +225,19 @@ public class TurnusModelAdapter {
     private Type getOutputPortType(CalActor calActor, String portName) {
         Optional<PortDecl> port = calActor.getOutputPorts().stream().filter(portDecl -> portDecl.getName().equals(portName)).findFirst();
         if (port.isPresent()) {
-            Type type = getTurnusType(port.get().getType());
+            Type type = getTurnusType(port.get());
             return type;
         }
         return DataflowFactory.eINSTANCE.createTypeUndefined();
     }
 
-    private Type getTurnusType(TypeExpr expr) {
-        se.lth.cs.tycho.type.Type tychoType = types.type(expr);
+    private Type getTurnusType(PortDecl portDecl) {
+        se.lth.cs.tycho.type.Type tychoType = types.declaredPortType(portDecl);
+        return getTurnusType(tychoType);
+    }
+
+    private Type getTurnusType(VarDecl decl) {
+        se.lth.cs.tycho.type.Type tychoType = types.declaredType(decl);
         return getTurnusType(tychoType);
     }
 

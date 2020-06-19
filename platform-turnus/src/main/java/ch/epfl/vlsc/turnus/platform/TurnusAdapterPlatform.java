@@ -19,12 +19,17 @@ public class TurnusAdapterPlatform implements Platform {
 
     public static List<Phase> prepareActorPhases() {
         return ImmutableList.of(
+                new ActionCaseToActionsPhase(),
                 new RenameActorVariablesPhase(),
                 new LiftProcessVarDeclsPhase(),
                 new ProcessToCalPhase(),
                 new AddSchedulePhase(),
                 new ScheduleUntaggedPhase(),
                 new ScheduleInitializersPhase(),
+                new AddPrioritiesPhase(),
+                new RemoveIdleMatchExpressionsPhase(),
+                new SubstitutePatternBindingsPhase(),
+                new AddMatchGuardsPhase(),
                 new MergeManyGuardsPhase()
         );
     }
