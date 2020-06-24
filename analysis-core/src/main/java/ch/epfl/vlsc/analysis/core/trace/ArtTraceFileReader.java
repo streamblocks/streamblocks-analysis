@@ -95,9 +95,9 @@ public class ArtTraceFileReader extends XmlReader {
         if (timestamp != null) {
             if (mLastEvent != null) {
                 // Fill in execution time of last event...
-                String attr = element.getAttribute("attr");
-                Integer value = getIntegerAttribute(element, "value");
-                int execTime = (attr != null && attr.equals("exectime") && value != null) ? value : // attr="exectime" value="1234"
+                String attr = element.getAttribute("exectime");
+                Integer value = getIntegerAttribute(element, "exectime");
+                int execTime = value != null ? value : // attr="exectime" value="1234"
                         (int) (timestamp - mLastEvent.getTimeStamp());                  // or diff between consecutive timestamps
 
                 if (execTime >= 0) {
