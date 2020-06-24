@@ -114,7 +114,13 @@ public class ActionWeightReader extends XmlReader {
                 String qidActionName = network.getAction(weight.getActionId()).getName();
                 if (qidActionName.startsWith(instance.getInstanceName() + ".")) {
                     String actionName = qidActionName.replace(instance.getInstanceName() + ".", "");
-                    String w = String.format("\t\t<action id=\"%s\" clockcycles=\"%.1f\" clockcycles-min=\"%.1f\" clockcycles-max=\"%.1f\" variance=\"%.1f\" firings=\"%d\" dropped-firings=\"%d\"/>",
+                    String w = String.format("\t\t<action id=\"%s\" clockcycles=\"%.1f\" clockcycles-min=\"%.1f\" clockcycles-max=\"%.1f\"/>",
+                            actionName,
+                            weight.getFirings() > 0 ? weight.getAverage() : 0,
+                            (float) weight.getMin(),
+                            (float) weight.getMax()
+                    );
+                    String w2 = String.format("\t\t<action id=\"%s\" clockcycles=\"%.1f\" clockcycles-min=\"%.1f\" clockcycles-max=\"%.1f\" variance=\"%.1f\" firings=\"%d\" dropped-firings=\"%d\"/>",
                             actionName,
                             weight.getFirings() > 0 ? weight.getAverage() : 0,
                             (float) weight.getMin(),
@@ -123,6 +129,7 @@ public class ActionWeightReader extends XmlReader {
                             weight.getFirings(),
                             weight.getFirings() - weight.getFilteredFirings()
                     );
+
                     System.out.println(w);
                 }
             }

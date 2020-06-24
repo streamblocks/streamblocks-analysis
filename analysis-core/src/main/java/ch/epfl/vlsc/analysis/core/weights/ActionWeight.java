@@ -1,6 +1,5 @@
 package ch.epfl.vlsc.analysis.core.weights;
 
-import org.apache.commons.math3.stat.StatUtils;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -26,8 +25,8 @@ public class ActionWeight {
         this.filterDataPoints = new ArrayList<>();
         this.actionId = actionId;
         sum = 0;
-        min = Integer.MAX_VALUE;
-        max = Integer.MIN_VALUE;
+        min = Double.MAX_VALUE;
+        max = Double.MIN_VALUE;
         firings = 0;
     }
 
@@ -41,17 +40,14 @@ public class ActionWeight {
         double threshold = Double.MAX_VALUE;
 
         if (useFilter && firings > 2) {
-            double[] dataPointsArray = dataPoints.stream().mapToDouble(Double::doubleValue).toArray();
-            double variance = StatUtils.variance(dataPointsArray);
-
-            threshold = StatUtils.mean(dataPointsArray) + 2 + Math.sqrt(variance);
+            double variance = calcVariance(dataPoints);
+            threshold = calcAverage(dataPoints) + 2 + Math.sqrt(variance);
         }
 
         calcWeightSimple(threshold);
     }
 
     private void calcWeightSimple(double threshold) {
-        double[] filtered = new double[dataPoints.size()];
         int i = 0;
         for (Double weight : dataPoints) {
             if (weight < threshold) {
@@ -59,29 +55,29 @@ public class ActionWeight {
                 if (weight < min) {
                     min = weight;
                 }
-
                 // -- Maximum
                 if (weight > max) {
                     max = weight;
                 }
-                filtered[i] = weight;
+
                 i++;
                 filterDataPoints.add(weight);
             }
         }
 
         filteredFirings = i;
-        average = StatUtils.mean(filtered);
-        variance = StatUtils.variance(filtered);
+        average = calcAverage(filterDataPoints);
+        variance = calcVariance(filterDataPoints);
     }
 
-    private double calcVariance(List<Integer> dataPoints) {
+    private double calcVariance(List<Double> dataPoints) {
         double tmp = 0.0;
         double sumDiffMean = 0.0;
         double variance = 0.0;
+        double avg = calcAverage(dataPoints);
         if (dataPoints.size() > 2) {
-            for (Integer weight : dataPoints) {
-                tmp = weight - calcAverage(dataPoints);
+            for (Double weight : dataPoints) {
+                tmp = weight - avg;
                 sumDiffMean += tmp * tmp;
             }
             variance = sumDiffMean / (firings - 1);
@@ -91,9 +87,9 @@ public class ActionWeight {
         return variance;
     }
 
-    private double calcAverage(List<Integer> dataPoints) {
+    private double calcAverage(List<Double> dataPoints) {
         long sum = 0;
-        for (Integer weight : dataPoints) {
+        for (Double weight : dataPoints) {
             sum += weight;
         }
         return dataPoints.size() > 0 ? (double) sum / dataPoints.size() : 0.0;
