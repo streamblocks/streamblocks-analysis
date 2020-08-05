@@ -7,11 +7,14 @@ import ch.epfl.vlsc.analysis.core.trace.ArtTraceEvent;
 import ch.epfl.vlsc.analysis.core.util.io.ErrorConsole;
 import ch.epfl.vlsc.analysis.core.util.io.StdErrorConsole;
 import ch.epfl.vlsc.analysis.core.util.io.XmlReader;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,48 +47,56 @@ public class ActionWeightReader extends XmlReader {
         return reader.readNetworkDescription(input);
     }
 
-    public void readWeights(String[] args, int first) {
+    public void readWeightsFast(String[] args, int first) {
         for (int i = first + 1; i < args.length; ++i) {
             File input = new File(args[i]);
-            Document doc = readDocument(input);
-            System.out.println("Document loaded");
-            for (Node node = doc.getFirstChild(); node != null; node = node.getNextSibling()) {
-                if (isTag(node, "execution-trace")) {
-                    mCpuIndex = i;
-                    readExecutionTrace((Element) node);
+            try {
+                FileInputStream fileInputStream = new FileInputStream(input);
+                XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(
+                        fileInputStream);
+
+                while (xmlStreamReader.hasNext()) {
+                    int eventCode = xmlStreamReader.next();
+                    if ((XMLStreamConstants.START_ELEMENT == eventCode)
+                            && xmlStreamReader.getLocalName().equalsIgnoreCase("execution-trace")) {
+                        while (xmlStreamReader.hasNext()) {
+
+                            eventCode = xmlStreamReader.next();
+
+                            // this breaks _users record_ reading logic
+                            //
+                            if ((XMLStreamConstants.END_ELEMENT == eventCode)
+                                    && xmlStreamReader.getLocalName().equalsIgnoreCase("execution-trace")) {
+                                break;
+                            } else {
+                                if ((XMLStreamConstants.START_ELEMENT == eventCode)
+                                        && xmlStreamReader.getLocalName().equalsIgnoreCase("trace")) {
+
+                                    int attributesCount = xmlStreamReader.getAttributeCount();
+                                    if (attributesCount == 4) {
+                                        Long timestamp = Long.parseLong(xmlStreamReader.getAttributeValue(0));
+
+                                        if (timestamp != null) {
+                                            Integer action = Integer.parseInt(xmlStreamReader.getAttributeValue(1));
+                                            Integer execTime = Integer.parseInt(xmlStreamReader.getAttributeValue(2));
+                                            Integer step = Integer.parseInt(xmlStreamReader.getAttributeValue(3));
+                                            if (step != null && action != null) {
+                                                actionWeights.get(action).update(execTime);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
+
+
+            } catch (FileNotFoundException | XMLStreamException e) {
+                e.printStackTrace();
             }
+            System.out.println("Document loaded");
         }
-    }
-
-    private void readExecutionTrace(Element element) {
-        for (Node node = element.getFirstChild(); node != null; node = node.getNextSibling()) {
-            ArtTraceEvent event = null;
-
-            if (isTag(node, "trace")) {
-                readTraceEvent((Element) node);
-            } else if (node.getNodeType() == Node.ELEMENT_NODE) {
-                readOther((Element) node);
-            }
-
-        }
-    }
-
-    private void readTraceEvent(Element element) {
-        Long timestamp = getRequiredLongAttribute(element, "timestamp");
-
-        if (timestamp != null) {
-            Integer step = getIntegerAttribute(element, "step");
-            Integer action = getIntegerAttribute(element, "action");
-            Integer execTime = getIntegerAttribute(element, "exectime");
-            if (step != null && action != null) {
-                actionWeights.get(action).update(execTime);
-            }
-        }
-    }
-
-    private ArtTraceEvent readOther(Element element) {
-        return null;
     }
 
     public void read(String[] args) {
@@ -100,7 +111,7 @@ public class ActionWeightReader extends XmlReader {
             actionWeights.add(key, new ActionWeight(key));
         }
 
-        readWeights(args, 0);
+        readWeightsFast(args, 0);
         System.out.println("Weights have been read");
 
         actionWeights.forEach(w -> w.finalize(true));

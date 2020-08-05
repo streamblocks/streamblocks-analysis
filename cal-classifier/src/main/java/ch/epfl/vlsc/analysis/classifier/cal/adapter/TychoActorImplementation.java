@@ -3,8 +3,12 @@ package ch.epfl.vlsc.analysis.classifier.cal.adapter;
 import ch.epfl.vlsc.analysis.core.adapter.VanillaActorSchedule;
 import ch.epfl.vlsc.analysis.core.adapter.VanillaPortSignature;
 import ch.epfl.vlsc.analysis.core.air.*;
+import org.multij.MultiJ;
+import se.lth.cs.tycho.attribute.TypeScopes;
+import se.lth.cs.tycho.attribute.VariableDeclarations;
 import se.lth.cs.tycho.compiler.CompilationTask;
-import se.lth.cs.tycho.interp.*;
+import se.lth.cs.tycho.meta.interp.Environment;
+import se.lth.cs.tycho.meta.interp.Interpreter;
 import se.lth.cs.tycho.ir.decl.VarDecl;
 import se.lth.cs.tycho.ir.entity.cal.CalActor;
 import se.lth.cs.tycho.ir.entity.cal.InputPattern;
@@ -13,6 +17,9 @@ import se.lth.cs.tycho.ir.expr.ExprBinaryOp;
 import se.lth.cs.tycho.ir.expr.ExprLiteral;
 import se.lth.cs.tycho.ir.expr.Expression;
 import se.lth.cs.tycho.ir.network.Instance;
+import se.lth.cs.tycho.meta.interp.op.Binary;
+import se.lth.cs.tycho.meta.interp.op.Unary;
+import se.lth.cs.tycho.meta.interp.value.ValueInteger;
 import se.lth.cs.tycho.transformation.cal2am.Schedule;
 
 import java.util.*;
@@ -26,14 +33,19 @@ public class TychoActorImplementation extends TychoActorInstance implements Acto
     private final TychoActionPriorityRelation priorityRelation;
     private final ActorSchedule fsm;
     private final CompilationTask compilationTask;
-    private final BasicInterpreter interpreter;
+    private final Interpreter interpreter;
 
     public TychoActorImplementation(CompilationTask compilationTask, Instance instance, CalActor calActor) {
         super(instance, calActor);
         this.compilationTask = compilationTask;
         this.actionMap = new HashMap<>();
         this.actionToTychoActionMap = new HashMap<>();
-        interpreter = new BasicInterpreter(compilationTask, 100);
+        this.interpreter = MultiJ.from(Interpreter.class)
+                .bind("variables").to(compilationTask.getModule(VariableDeclarations.key))
+                .bind("types").to(compilationTask.getModule(TypeScopes.key))
+                .bind("unary").to(MultiJ.from(Unary.class).instance())
+                .bind("binary").to(MultiJ.from(Binary.class).instance())
+                .instance();
         // -- Create state variables
         Map<String, StateVariable> stateVarMap = createStateVariables(calActor);
         stateVariables = new ArrayList<>(stateVarMap.values());
@@ -71,13 +83,12 @@ public class TychoActorImplementation extends TychoActorInstance implements Acto
 
     private PortSignature createPortSignature(se.lth.cs.tycho.ir.entity.cal.Action action) {
         Map<PortInstance, Integer> portRates = new HashMap<>();
+        Environment env = new Environment();
         for (InputPattern pattern : action.getInputPatterns()) {
             PortInstance portInstance = getPort(pattern.getPort().getName());
             int rate = pattern.getMatches().size();
             if (pattern.getRepeatExpr() != null) {
-                Memory mem = new BasicMemory();
-                Environment env = new BasicEnvironment(mem);
-                rate = rate * (int) interpreter.evaluate(pattern.getRepeatExpr(), env).getLong();
+                rate = rate * ((ValueInteger) interpreter.eval(pattern.getRepeatExpr(),env)).integer();
             }
             portRates.put(portInstance, rate);
         }
@@ -86,9 +97,7 @@ public class TychoActorImplementation extends TychoActorInstance implements Acto
             PortInstance portInstance = getPort(outputExpression.getPort().getName());
             int rate = outputExpression.getExpressions().size();
             if (outputExpression.getRepeatExpr() != null) {
-                Memory mem = new BasicMemory();
-                Environment env = new BasicEnvironment(mem);
-                rate = rate * (int) interpreter.evaluate(outputExpression.getRepeatExpr(), env).getLong();
+                rate = rate * ((ValueInteger) interpreter.eval(outputExpression.getRepeatExpr(), env)).integer();
             }
             portRates.put(portInstance, rate);
         }
