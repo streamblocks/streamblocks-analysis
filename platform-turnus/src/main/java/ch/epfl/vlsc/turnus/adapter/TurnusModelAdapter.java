@@ -85,7 +85,7 @@ public class TurnusModelAdapter {
 
             CalActor calActor = (CalActor) entityDecl.getEntity();
             if (entityDecl.getExternal()) {
-                calActorMap.put(entityDecl.getOriginalName(), calActor);
+                calActorMap.put(instance.getInstanceName(), calActor);
                 nameExternalActor.put(instance.getInstanceName(), entityDecl.getOriginalName());
             } else {
                 calActorMap.put(instance.getInstanceName(), calActor);
@@ -113,6 +113,11 @@ public class TurnusModelAdapter {
                 actor.setName(instance.getInstanceName());
                 actor.setActorClass(actorClass);
 
+                // -- Actions
+                Set<se.lth.cs.tycho.ir.entity.cal.Action> allActions = new HashSet<>();
+                allActions.addAll(calActor.getActions());
+                allActions.addAll(calActor.getInitializers());
+
 
                 // -- Actor Input Ports
                 for (PortDecl decl : calActor.getInputPorts()) {
@@ -136,6 +141,15 @@ public class TurnusModelAdapter {
                     actor.getVariables().add(stateVar);
                 }
 
+                for (se.lth.cs.tycho.ir.entity.cal.Action tychoAction : allActions) {
+                    for (LocalVarDecl localVarDecl : tychoAction.getVarDecls()) {
+                        Variable stateVar = factory.createVariable();
+                        stateVar.setName(localVarDecl.getOriginalName());
+                        stateVar.setType(getTurnusType(localVarDecl));
+                        actor.getVariables().add(stateVar);
+                    }
+                }
+
                 // -- Parameters Variables as State Variables
                 for (ParameterVarDecl parameterVarDecl : calActor.getValueParameters()) {
                     Variable paramVar = factory.createVariable();
@@ -144,10 +158,7 @@ public class TurnusModelAdapter {
                     actor.getVariables().add(paramVar);
                 }
 
-                // -- Actions
-                Set<se.lth.cs.tycho.ir.entity.cal.Action> allActions = new HashSet<>();
-                allActions.addAll(calActor.getActions());
-                allActions.addAll(calActor.getInitializers());
+
                 for (se.lth.cs.tycho.ir.entity.cal.Action tychoAction : allActions) {
                     Action action = factory.createAction();
                     action.setName(tychoAction.getTag().toString());
@@ -169,6 +180,7 @@ public class TurnusModelAdapter {
                 String name = entityDecl.getOriginalName();
                 if (ArtExternals.externalActors.containsKey(name)) {
                     Actor actor = ArtExternals.externalActors.get(name);
+                    actor.setName(instance.getInstanceName());
                     actor.setActorClass(actorClass);
                     network.getActors().add(actor);
                 } else {
@@ -191,30 +203,31 @@ public class TurnusModelAdapter {
 
             Port tpSource;
             Port tpTarget;
+            tpSource = network.getActor(instanceSource).getOutputPort(portSource);
+            /*
             if (nameExternalActor.containsKey(instanceSource)) {
                 tpSource = network.getActor(nameExternalActor.get(instanceSource)).getOutputPort(portSource);
             } else {
-                tpSource = network.getActor(instanceSource).getOutputPort(portSource);
-            }
-
+            }*/
+            tpTarget = network.getActor(instanceTarget).getInputPort(portTarget);
+/*
             if (nameExternalActor.containsKey(instanceTarget)) {
                 tpTarget = network.getActor(nameExternalActor.get(instanceTarget)).getInputPort(portTarget);
             } else {
-                tpTarget = network.getActor(instanceTarget).getInputPort(portTarget);
-            }
+            }*/
 
             Buffer buffer = factory.createBuffer();
             buffer.setSource(tpSource);
             buffer.setTarget(tpTarget);
 
             CalActor actor;
-
+/*
             if (nameExternalActor.containsKey(instanceSource)) {
                 actor = calActorMap.get(nameExternalActor.get(instanceSource));
             } else {
-                actor = calActorMap.get(instanceSource);
-            }
+            }*/
 
+            actor = calActorMap.get(instanceSource);
             buffer.setType(getOutputPortType(actor, portSource));
             network.getBuffers().add(buffer);
         }
