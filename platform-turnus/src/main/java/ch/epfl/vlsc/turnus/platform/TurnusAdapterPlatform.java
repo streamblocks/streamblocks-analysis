@@ -39,7 +39,7 @@ public class TurnusAdapterPlatform implements Platform {
 
     @Override
     public String name() {
-        return "StreamBlocks Turnus Adapter";
+        return "turnus";
     }
 
     @Override

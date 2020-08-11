@@ -1,0 +1,32 @@
+#!/bin/bash
+
+function readlink_rec {
+	res="$(readlink $1 || echo $1)"
+	if [ $res = $1 ]
+	then
+		echo $res
+	else
+		readlink_rec $res
+	fi
+}
+
+child=`dirname "$(readlink_rec $0)"`
+
+if [[ "$PWD" = $(readlink -f "${child}") ]];
+then
+    root="$(cd -P "$(dirname "${child}")/..";pwd)"
+else
+    root="$(cd -P "$(dirname "${child}")/";pwd)"
+fi
+
+
+lib="$root/platform-turnus/target/lib"
+turnus_analysis="$root/platform-turnus/target/lib/turnus.analysis-1.0.0-SNAPSHOT.jar"
+
+if [ -f "$turnus_analysis" ]
+then
+	java -cp "$comp:$platforms:$lib/*" turnus.analysis.bottlenecks.ScheduledPartialCriticalPathAnalysisCli "$@"
+else
+	echo "TURNUS is not compiled. Please, run \"mvn install\" to compile."
+	exit 1
+fi
