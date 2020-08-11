@@ -148,13 +148,13 @@ public class ActionWeightReader extends XmlReader {
         }
         System.out.println("</network>");
 
-        int viz = 20;
+        //int viz = 20;
 
-        String name = network.getAction(actionWeights.get(viz).getActionId()).getName();
+        //String name = network.getAction(actionWeights.get(viz).getActionId()).getName();
 
-        WeightsVisualization.visulize(name + " filtered", actionWeights.get(viz).getPlot(true));
+       // WeightsVisualization.visulize(name + " filtered", actionWeights.get(viz).getPlot(true));
 
-        WeightsVisualization.visulize(name, actionWeights.get(viz).getPlot(false));
+        //WeightsVisualization.visulize(name, actionWeights.get(viz).getPlot(false));
 
     }
 }

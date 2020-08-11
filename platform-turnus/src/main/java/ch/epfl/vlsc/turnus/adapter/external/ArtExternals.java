@@ -13,6 +13,7 @@ public class ArtExternals {
             put("art_Source_byte", getArtSource("art_Source_byte"));
             put("art_Source_real", getArtSource("art_Source_real"));
             put("art_Source_txt", getArtSource("art_Source_txt"));
+            put("art_Sink_txt", getArtSink("art_Sink_txt"));
             put("art_Display_yuv", getDisplayYuv());
             put("art_Display_yuv_width_height", getDisplayYuvWidthHeight());
         }
@@ -49,6 +50,38 @@ public class ArtExternals {
         // -- Action
         Action action = factory.createAction();
         action.setName("action");
+        action.getOutputPorts().add(port);
+
+        actor.getActions().add(action);
+
+        return actor;
+    }
+
+    private static Actor getArtSink(String name) {
+        DataflowFactory factory = DataflowFactory.eINSTANCE;
+        Actor actor = factory.createActor();
+        actor.setName(name);
+
+        // -- Output Port : Out
+        Port port = factory.createPort();
+        port.setName("In");
+        actor.getInputPorts().add(port);
+
+        // -- State variables
+
+        // -- Parameters as State Variables
+
+        // -- filename
+        Variable fileName = factory.createVariable();
+        fileName.setName("fileName");
+        fileName.setType(DataflowFactory.eINSTANCE.createTypeString());
+        //actor.getVariables().add(fileName);
+
+
+
+        // -- Action
+        Action action = factory.createAction();
+        action.setName("sink");
         action.getOutputPorts().add(port);
 
         actor.getActions().add(action);
