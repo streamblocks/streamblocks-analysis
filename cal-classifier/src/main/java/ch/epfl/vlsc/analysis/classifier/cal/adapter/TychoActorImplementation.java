@@ -19,7 +19,7 @@ import se.lth.cs.tycho.ir.expr.Expression;
 import se.lth.cs.tycho.ir.network.Instance;
 import se.lth.cs.tycho.meta.interp.op.Binary;
 import se.lth.cs.tycho.meta.interp.op.Unary;
-import se.lth.cs.tycho.meta.interp.value.ValueInteger;
+import se.lth.cs.tycho.meta.interp.value.ValueLong;
 import se.lth.cs.tycho.transformation.cal2am.Schedule;
 
 import java.util.*;
@@ -88,7 +88,7 @@ public class TychoActorImplementation extends TychoActorInstance implements Acto
             PortInstance portInstance = getPort(pattern.getPort().getName());
             int rate = pattern.getMatches().size();
             if (pattern.getRepeatExpr() != null) {
-                rate = rate * ((ValueInteger) interpreter.eval(pattern.getRepeatExpr(),env)).integer();
+                rate = (int) (rate * ((ValueLong) interpreter.eval(pattern.getRepeatExpr(),env)).value());
             }
             portRates.put(portInstance, rate);
         }
@@ -97,7 +97,7 @@ public class TychoActorImplementation extends TychoActorInstance implements Acto
             PortInstance portInstance = getPort(outputExpression.getPort().getName());
             int rate = outputExpression.getExpressions().size();
             if (outputExpression.getRepeatExpr() != null) {
-                rate = rate * ((ValueInteger) interpreter.eval(outputExpression.getRepeatExpr(), env)).integer();
+                rate = (int) (rate * ((ValueLong) interpreter.eval(outputExpression.getRepeatExpr(), env)).value());
             }
             portRates.put(portInstance, rate);
         }
