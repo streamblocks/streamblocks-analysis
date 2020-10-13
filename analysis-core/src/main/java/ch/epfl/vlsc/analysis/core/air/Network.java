@@ -37,11 +37,7 @@ package ch.epfl.vlsc.analysis.core.air;
 
 import java.util.Collection;
 
-public interface Network {
-    /**
-     * @return the name of the network
-     */
-    String getName();
+public interface Network extends Instance{
 
     /**
      * @return the actors of the network

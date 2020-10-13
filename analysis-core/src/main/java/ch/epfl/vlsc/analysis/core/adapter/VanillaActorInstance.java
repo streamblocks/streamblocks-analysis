@@ -60,7 +60,7 @@ public class VanillaActorInstance implements ActorInstance {
     }
 
     @Override
-    public String getInstanceName() {
+    public String getName() {
         return mInstanceName;
     }
 

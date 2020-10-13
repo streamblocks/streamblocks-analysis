@@ -564,7 +564,7 @@ public class ScenarioAwareStateExploration {
 										PortInstance pi = actor.getPort(p.trim());
 										if (pi == null) {
 											String msg = "Scenario tag error. Actor '";
-											msg += actor.getInstanceName() + "' does not have port " + p.trim();
+											msg += actor.getName() + "' does not have port " + p.trim();
 											throw new NullPointerException(msg);
 										}
 										controlToken.addControlPort(pi);

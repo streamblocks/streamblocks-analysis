@@ -83,10 +83,10 @@ public class StateDependenceReader extends XmlReader {
             // Create actor and action look-up
             for (Action action : network.getActionMap().values()) {
                 ActorInstance actor = network.getActor(action);
-                Map<String, Action> actionMap = actorMap.get(actor.getInstanceName());
+                Map<String, Action> actionMap = actorMap.get(actor.getName());
                 if (actionMap == null) {
                     actionMap = new HashMap<>();
-                    actorMap.put(actor.getInstanceName(), actionMap);
+                    actorMap.put(actor.getName(), actionMap);
                 }
                 actionMap.put(action.getName(), action);
             }
@@ -121,7 +121,7 @@ public class StateDependenceReader extends XmlReader {
                 } else if (isTag(child, "affinity")) {
                     String cpu = readAffinity((Element) child);
                     for (ActorInstance actor : network.getActors()) {
-                        if (actor.getInstanceName().equals(instanceName)) {
+                        if (actor.getName().equals(instanceName)) {
                             stateDep.setAffinity(actor, cpu);
                             break;
                         }

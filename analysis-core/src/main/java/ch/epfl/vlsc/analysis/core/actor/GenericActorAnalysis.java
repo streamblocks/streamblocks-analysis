@@ -131,7 +131,7 @@ public class GenericActorAnalysis {
                     for (AnnotatedActionProperty aap : annotatedActionProperties) {
                         for (PortInstance p : getActor().getPorts()) {
                             if (aap.portRates.get(p.getName()) == null)
-                                throw new Exception("Type annotated actor '" + p.getActor().getInstanceName() +
+                                throw new Exception("Type annotated actor '" + p.getActor().getName() +
                                         "' does not have rate for port '" + p.getName() + "'.");
                         }
                     }

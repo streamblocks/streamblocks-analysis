@@ -71,7 +71,7 @@ public class VanillaPortInstance implements PortInstance {
 
     @Override
     public String toString() {
-        return mActor.getInstanceName() + "." + mName;
+        return mActor.getName() + "." + mName;
     }
 }
 

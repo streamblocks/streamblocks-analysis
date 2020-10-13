@@ -138,9 +138,9 @@ public class ScenarioGraph {
 		for (Map.Entry<ActorInstance, ScenarioAwareActorAnalysis.Scenario> e :
 				actorsMap.entrySet()) {
 			if (e.getValue().getTransition() != null)
-				stream.println("\t\t" + e.getKey().getInstanceName() + " " + e.getValue().getTransition().getAction().getName());
+				stream.println("\t\t" + e.getKey().getName() + " " + e.getValue().getTransition().getAction().getName());
 			else
-				stream.println("\t\t" + e.getKey().getInstanceName());
+				stream.println("\t\t" + e.getKey().getName());
 		}
 	}
 }

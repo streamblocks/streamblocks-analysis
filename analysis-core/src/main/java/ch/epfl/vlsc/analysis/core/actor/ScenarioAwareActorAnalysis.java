@@ -161,7 +161,7 @@ public class ScenarioAwareActorAnalysis extends GenericActorAnalysis {
      * @param stream
      */
     public void printScenarios(Stream stream) {
-        stream.println("Scenarios: " + getActor().getInstanceName());
+        stream.println("Scenarios: " + getActor().getName());
         stream.println("\t Annotated: " + isTypeAnnotated());
         for (Scenario scenario : scenarios) {
             scenario.print(stream);
@@ -221,13 +221,13 @@ public class ScenarioAwareActorAnalysis extends GenericActorAnalysis {
      */
     private boolean isScenarioAwareDynamicActor() {
         if (isScenarioAwareStaticActor()) {
-            System.out.println(this.getActor().getInstanceName() + " is not SA_Dynamic : b/c it's SA_Static.");
+            System.out.println(this.getActor().getName() + " is not SA_Dynamic : b/c it's SA_Static.");
             return false;
         }
 
         //Check if those actions on non-deterministic states have scenario-aware guards
         if (!areNonDeterministicStatesSimplyGuarded()) {
-            System.out.println(this.getActor().getInstanceName() +
+            System.out.println(this.getActor().getName() +
                     " is not SA_Dynamic : b/c not all non-deterministic transitions are scenario-aware guarded.");
             return false;
         }

@@ -125,8 +125,8 @@ public class NetworkClassifierOutput {
 		//add each actor
 		for (ActorInstance actor : network.getActors()) {
 			XMLNode actorNode = new XMLNode("actor");
-			actorNode.addAttribute("name", actor.getInstanceName());
-			actorNode.addAttribute("type", actor.getInstanceName());
+			actorNode.addAttribute("name", actor.getName());
+			actorNode.addAttribute("type", actor.getName());
 			for (PortInstance p : actor.getPorts()) {
 				XMLNode portNode = new XMLNode("port");
 				portNode.addAttribute("name", p.getName());
@@ -141,11 +141,11 @@ public class NetworkClassifierOutput {
 		//add each connection
 		for (Connection c : network.getConnections()) {
 			XMLNode connectionNode = new XMLNode("channel");
-			connectionNode.addAttribute("name", c.getProducerPort().getActor().getInstanceName() +
-					"2" + c.getConsumerPort().getActor().getInstanceName());
-			connectionNode.addAttribute("srcActor", c.getProducerPort().getActor().getInstanceName());
+			connectionNode.addAttribute("name", c.getProducerPort().getActor().getName() +
+					"2" + c.getConsumerPort().getActor().getName());
+			connectionNode.addAttribute("srcActor", c.getProducerPort().getActor().getName());
 			connectionNode.addAttribute("srcPort", c.getProducerPort().getName());
-			connectionNode.addAttribute("dstActor", c.getConsumerPort().getActor().getInstanceName());
+			connectionNode.addAttribute("dstActor", c.getConsumerPort().getActor().getName());
 			connectionNode.addAttribute("dstPort", c.getConsumerPort().getName());
 			if (analysis.getConnectionAnalysis(c).getInitialTokenSize() != null)
 				connectionNode.addAttribute("initialTokens", analysis.getConnectionAnalysis(c).getInitialTokenSize().toString());
@@ -155,7 +155,7 @@ public class NetworkClassifierOutput {
 		//add properties each actor
 		for (ActorInstance actor : network.getActors()) {
 			XMLNode actorPropertiesNode = new XMLNode("actorProperties");
-			actorPropertiesNode.addAttribute("actor", actor.getInstanceName());
+			actorPropertiesNode.addAttribute("actor", actor.getName());
 			//add processor
 			XMLNode processorNode = new XMLNode("processor");
 			processorNode.addAttribute("type", "arm");
@@ -180,8 +180,8 @@ public class NetworkClassifierOutput {
 		//add properties of each connection
 		for (Connection c : network.getConnections()) {
 			XMLNode connectionPropertyNode = new XMLNode("channelProperties");
-			connectionPropertyNode.addAttribute("channel", c.getProducerPort().getActor().getInstanceName() +
-					"2" + c.getConsumerPort().getActor().getInstanceName());
+			connectionPropertyNode.addAttribute("channel", c.getProducerPort().getActor().getName() +
+					"2" + c.getConsumerPort().getActor().getName());
 			XMLNode tokenSizeNode = new XMLNode("tokenSize");
 			tokenSizeNode.addAttribute("size", analysis.getConnectionAnalysis(c).getTokenSize().toString());
 			connectionPropertyNode.addXMLNode(tokenSizeNode);
@@ -224,8 +224,8 @@ public class NetworkClassifierOutput {
 		//add each actor
 		for (ActorInstance actor : network.getActors()) {
 			XMLNode actorNode = new XMLNode("actor");
-			actorNode.addAttribute("name", actor.getInstanceName());
-			actorNode.addAttribute("type", actor.getInstanceName());
+			actorNode.addAttribute("name", actor.getName());
+			actorNode.addAttribute("type", actor.getName());
 			for (PortInstance p : actor.getPorts()) {
 				XMLNode portNode = new XMLNode("port");
 				portNode.addAttribute("name", p.getName());
@@ -240,11 +240,11 @@ public class NetworkClassifierOutput {
 		//add each connection
 		for (Connection c : network.getConnections()) {
 			XMLNode connectionNode = new XMLNode("channel");
-			connectionNode.addAttribute("name", c.getProducerPort().getActor().getInstanceName() +
-					"2" + c.getConsumerPort().getActor().getInstanceName());
-			connectionNode.addAttribute("srcActor", c.getProducerPort().getActor().getInstanceName());
+			connectionNode.addAttribute("name", c.getProducerPort().getActor().getName() +
+					"2" + c.getConsumerPort().getActor().getName());
+			connectionNode.addAttribute("srcActor", c.getProducerPort().getActor().getName());
 			connectionNode.addAttribute("srcPort", c.getProducerPort().getName());
-			connectionNode.addAttribute("dstActor", c.getConsumerPort().getActor().getInstanceName());
+			connectionNode.addAttribute("dstActor", c.getConsumerPort().getActor().getName());
 			connectionNode.addAttribute("dstPort", c.getConsumerPort().getName());
 			if (analysis.getConnectionAnalysis(c).getInitialTokenSize() != null)
 				connectionNode.addAttribute("initialTokens", analysis.getConnectionAnalysis(c).getInitialTokenSize().toString());
@@ -254,7 +254,7 @@ public class NetworkClassifierOutput {
 		//add properties each actor
 		for (ActorInstance actor : network.getActors()) {
 			XMLNode actorPropertiesNode = new XMLNode("actorProperties");
-			actorPropertiesNode.addAttribute("actor", actor.getInstanceName());
+			actorPropertiesNode.addAttribute("actor", actor.getName());
 			//add processor
 			XMLNode processorNode = new XMLNode("processor");
 			processorNode.addAttribute("type", "arm");
@@ -279,8 +279,8 @@ public class NetworkClassifierOutput {
 		//add properties of each connection
 		for (Connection c : network.getConnections()) {
 			XMLNode connectionPropertyNode = new XMLNode("channelProperties");
-			connectionPropertyNode.addAttribute("channel", c.getProducerPort().getActor().getInstanceName() +
-					"2" + c.getConsumerPort().getActor().getInstanceName());
+			connectionPropertyNode.addAttribute("channel", c.getProducerPort().getActor().getName() +
+					"2" + c.getConsumerPort().getActor().getName());
 			XMLNode tokenSizeNode = new XMLNode("tokenSize");
 			tokenSizeNode.addAttribute("size", Integer.toString(analysis.getConnectionAnalysis(c).getTokenSize()));
 			connectionPropertyNode.addXMLNode(tokenSizeNode);
@@ -327,7 +327,7 @@ public class NetworkClassifierOutput {
 		//add each actor
 		for (ActorInstance actor : network.getActors()) {
 			XMLNode actorNode = new XMLNode("actor");
-			actorNode.addAttribute("name", actor.getInstanceName());
+			actorNode.addAttribute("name", actor.getName());
 			actorNode.addAttribute("type", analysis.getMcdfActorAnalysis(actor).getMcdfActorInstanceTypeAsString());
 			for (PortInstance p : actor.getPorts()) {
 				XMLNode portNode = new XMLNode("port");
@@ -343,11 +343,11 @@ public class NetworkClassifierOutput {
 		//add each connection
 		for (Connection c : network.getConnections()) {
 			XMLNode connectionNode = new XMLNode("channel");
-			connectionNode.addAttribute("name", c.getProducerPort().getActor().getInstanceName() +
-					"2" + c.getConsumerPort().getActor().getInstanceName());
-			connectionNode.addAttribute("srcActor", c.getProducerPort().getActor().getInstanceName());
+			connectionNode.addAttribute("name", c.getProducerPort().getActor().getName() +
+					"2" + c.getConsumerPort().getActor().getName());
+			connectionNode.addAttribute("srcActor", c.getProducerPort().getActor().getName());
 			connectionNode.addAttribute("srcPort", c.getProducerPort().getName());
-			connectionNode.addAttribute("dstActor", c.getConsumerPort().getActor().getInstanceName());
+			connectionNode.addAttribute("dstActor", c.getConsumerPort().getActor().getName());
 			connectionNode.addAttribute("dstPort", c.getConsumerPort().getName());
 			if (analysis.getConnectionAnalysis(c).getInitialTokenSize() != null)
 				connectionNode.addAttribute("initialTokens", analysis.getConnectionAnalysis(c).getInitialTokenSize().toString());
@@ -357,7 +357,7 @@ public class NetworkClassifierOutput {
 		//add properties each actor
 		for (ActorInstance actor : network.getActors()) {
 			XMLNode actorPropertiesNode = new XMLNode("actorProperties");
-			actorPropertiesNode.addAttribute("actor", actor.getInstanceName());
+			actorPropertiesNode.addAttribute("actor", actor.getName());
 			//add processor
 			XMLNode processorNode = new XMLNode("processor");
 			processorNode.addAttribute("type", "arm");
@@ -382,8 +382,8 @@ public class NetworkClassifierOutput {
 		//add properties of each connection
 		for (Connection c : network.getConnections()) {
 			XMLNode connectionPropertyNode = new XMLNode("channelProperties");
-			connectionPropertyNode.addAttribute("channel", c.getProducerPort().getActor().getInstanceName() +
-					"2" + c.getConsumerPort().getActor().getInstanceName());
+			connectionPropertyNode.addAttribute("channel", c.getProducerPort().getActor().getName() +
+					"2" + c.getConsumerPort().getActor().getName());
 			XMLNode tokenSizeNode = new XMLNode("tokenSize");
 			tokenSizeNode.addAttribute("size", Integer.toString(analysis.getConnectionAnalysis(c).getTokenSize()));
 			connectionPropertyNode.addXMLNode(tokenSizeNode);
@@ -415,10 +415,10 @@ public class NetworkClassifierOutput {
 						ActorInstance slave = slaveC.getConsumerPort().getActor();
 						XMLNode masterNode = new XMLNode("master");
 						masterNode.addAttribute("scenario", analysis.getMcdfActorAnalysis(master).getMcdfActorInstanceTypeAsString());
-						masterNode.addAttribute("actor", master.getInstanceName());
+						masterNode.addAttribute("actor", master.getName());
 						XMLNode slaveNode = new XMLNode("slave");
 						slaveNode.addAttribute("scenario", analysis.getMcdfActorAnalysis(slave).getMcdfActorInstanceTypeAsString());
-						slaveNode.addAttribute("actor", slave.getInstanceName());
+						slaveNode.addAttribute("actor", slave.getName());
 						masterNode.addXMLNode(slaveNode);
 						scenarioDependenciesNode.addXMLNode(masterNode);
 					}
@@ -483,7 +483,7 @@ public class NetworkClassifierOutput {
 				ActorInstance actor = a.getKey();
 				ScenarioAwareActorAnalysis.Scenario scenario = a.getValue();
 				XMLNode actorNode = new XMLNode("actor");
-				actorNode.addAttribute("name", actor.getInstanceName());
+				actorNode.addAttribute("name", actor.getName());
 				String type = "";
 				if (scenario.getTransition() == null) {
 					if (analysis.getScenarioAwareActorAnalysis(actor).getScenarioAwareActorInstanceType() ==
@@ -506,10 +506,10 @@ public class NetworkClassifierOutput {
 							for (Connection c : network.getIncidentConnections(p)) {
 								XMLNode portNode = new XMLNode("port");
 								if (p.getDirection() == Direction.IN) {
-									portNode.addAttribute("name", p.getName() + "_from_" + c.getProducerPort().getActor().getInstanceName());
+									portNode.addAttribute("name", p.getName() + "_from_" + c.getProducerPort().getActor().getName());
 									portNode.addAttribute("type", "in");
 								} else {
-									portNode.addAttribute("name", p.getName() + "_to_" + c.getConsumerPort().getActor().getInstanceName());
+									portNode.addAttribute("name", p.getName() + "_to_" + c.getConsumerPort().getActor().getName());
 									portNode.addAttribute("type", "out");
 								}
 								portNode.addAttribute("rate", scenario.getPortRate(p).toString());
@@ -539,12 +539,12 @@ public class NetworkClassifierOutput {
 							spDst.getPortRates().containsKey(c.getConsumerPort())) {
 						if (spSrc.getPortRate(c.getProducerPort()).intValue() > 0 &&
 								spDst.getPortRate(c.getConsumerPort()).intValue() > 0) {
-							connectionNode.addAttribute("name", c.getProducerPort().getActor().getInstanceName() +
-									"2" + c.getConsumerPort().getActor().getInstanceName());
-							connectionNode.addAttribute("srcActor", c.getProducerPort().getActor().getInstanceName());
-							connectionNode.addAttribute("srcPort", c.getProducerPort().getName() + "_to_" + c.getConsumerPort().getActor().getInstanceName());
-							connectionNode.addAttribute("dstActor", c.getConsumerPort().getActor().getInstanceName());
-							connectionNode.addAttribute("dstPort", c.getConsumerPort().getName() + "_from_" + c.getProducerPort().getActor().getInstanceName());
+							connectionNode.addAttribute("name", c.getProducerPort().getActor().getName() +
+									"2" + c.getConsumerPort().getActor().getName());
+							connectionNode.addAttribute("srcActor", c.getProducerPort().getActor().getName());
+							connectionNode.addAttribute("srcPort", c.getProducerPort().getName() + "_to_" + c.getConsumerPort().getActor().getName());
+							connectionNode.addAttribute("dstActor", c.getConsumerPort().getActor().getName());
+							connectionNode.addAttribute("dstPort", c.getConsumerPort().getName() + "_from_" + c.getProducerPort().getActor().getName());
 							connectionNode.addAttribute("initialTokens", "0");
 							scenarioGraphNode.addXMLNode(connectionNode);
 						}
@@ -562,7 +562,7 @@ public class NetworkClassifierOutput {
 			if (!actor.hasImplementation())
 				continue;
 			XMLNode actorPropertiesNode = new XMLNode("actorProperties");
-			actorPropertiesNode.addAttribute("actor", actor.getInstanceName());
+			actorPropertiesNode.addAttribute("actor", actor.getName());
 			//add processor
 			XMLNode processorNode = new XMLNode("processor");
 			processorNode.addAttribute("type", "arm");
@@ -600,8 +600,8 @@ public class NetworkClassifierOutput {
 					!c.getConsumerPort().getActor().hasImplementation())
 				continue;
 			XMLNode connectionPropertyNode = new XMLNode("channelProperties");
-			connectionPropertyNode.addAttribute("channel", c.getProducerPort().getActor().getInstanceName() +
-					"2" + c.getConsumerPort().getActor().getInstanceName());
+			connectionPropertyNode.addAttribute("channel", c.getProducerPort().getActor().getName() +
+					"2" + c.getConsumerPort().getActor().getName());
 			XMLNode tokenSizeNode = new XMLNode("tokenSize");
 			tokenSizeNode.addAttribute("size", Integer.toString(analysis.getConnectionAnalysis(c).getTokenSize()));
 			connectionPropertyNode.addXMLNode(tokenSizeNode);

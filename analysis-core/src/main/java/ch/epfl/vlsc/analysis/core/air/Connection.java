@@ -38,7 +38,7 @@ package ch.epfl.vlsc.analysis.core.air;
 /**
  * Represents a connection between two PortInstances, the edges of a Network
  */
-public interface Connection {
+public interface Connection extends Cloneable{
     /**
      * @return the PortInstance of the producer, the source w.r.t. this Connection
      */

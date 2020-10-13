@@ -69,7 +69,7 @@ public class CalClassifierPhase implements Phase {
 
         for (ActorInstance instance : tychoNetwork.getActors()) {
             GenericActorAnalysis ga = analysis.getGenericActorAnalysis(instance);
-            System.out.println(instance.getInstanceName());
+            System.out.println(instance.getName());
             System.out.println("\t - " + ga.getActorInstanceType().getName());
         }
 

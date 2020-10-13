@@ -94,7 +94,5 @@ public class TychoNetwork implements Network {
         return null;
     }
 
-    private void createActorInstance() {
 
-    }
 }

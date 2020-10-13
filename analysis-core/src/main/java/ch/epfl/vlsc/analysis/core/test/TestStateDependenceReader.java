@@ -70,7 +70,7 @@ public class TestStateDependenceReader {
             if (actor != lastActor) {
                 Object cpu = dep.getAffinity(actor);
                 String affinity = (cpu != null) ? " (affinity=" + cpu + ")" : "";
-                System.out.println("actor " + actor.getInstanceName() + affinity);
+                System.out.println("actor " + actor.getName() + affinity);
                 lastActor = actor;
             }
             System.out.println("  action " + action.getName());

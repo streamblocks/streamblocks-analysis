@@ -520,7 +520,7 @@ public class ScenarioAwareNetworkAnalysis extends GenericNetworkAnalysis {
 
 		//print to a stream
 		void print(Stream stream) {
-			stream.println("DetectorActor: " + detectorActor.getInstanceName());
+			stream.println("DetectorActor: " + detectorActor.getName());
 			stream.println("\tTokenName: " + tokenName);
 			stream.print("\tContorlPorts: ");
 			for (PortInstance p : controlPorts) {
@@ -574,7 +574,7 @@ public class ScenarioAwareNetworkAnalysis extends GenericNetworkAnalysis {
 		}
 
 		public void print(Stream stream) {
-			stream.println("\t" + detectorActor.getInstanceName() + "\t" + detectorAction.getName());
+			stream.println("\t" + detectorActor.getName() + "\t" + detectorAction.getName());
 			for (Map.Entry<String, Long> e : controlTokens.entrySet()) {
 				stream.println("\t\t" + e.getKey() + "\t" + e.getValue().longValue());
 			}

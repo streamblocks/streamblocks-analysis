@@ -120,11 +120,11 @@ public class ActionWeightReader extends XmlReader {
         String n = String.format("<network name=\"%s\">", network.getName());
         System.out.println(n);
         for (ActorInstance instance : network.getActors()) {
-            System.out.println("\t<actor id=\"" + instance.getInstanceName() + "\">");
+            System.out.println("\t<actor id=\"" + instance.getName() + "\">");
             for (ActionWeight weight : actionWeights) {
                 String qidActionName = network.getAction(weight.getActionId()).getName();
-                if (qidActionName.startsWith(instance.getInstanceName() + ".")) {
-                    String actionName = qidActionName.replace(instance.getInstanceName() + ".", "");
+                if (qidActionName.startsWith(instance.getName() + ".")) {
+                    String actionName = qidActionName.replace(instance.getName() + ".", "");
                     String w = String.format("\t\t<action id=\"%s\" clockcycles=\"%.1f\" clockcycles-min=\"%.1f\" clockcycles-max=\"%.1f\"/>",
                             actionName,
                             weight.getFirings() > 0 ? weight.getAverage() : 0,

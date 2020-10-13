@@ -38,29 +38,22 @@ package ch.epfl.vlsc.analysis.core.air;
 import java.util.Collection;
 import java.util.Map;
 
-public interface ActorInstance {
+public interface ActorInstance extends Instance{
 
     /**
-     * @return a descriptive name of the actor instance,
-     *         which is unique within the actor network
+     * @return the input ports of the actor
      */
-    String getInstanceName();
+    Collection<PortInstance> getInputPorts();
+
+    /**
+     * @return the output ports of the actor
+     */
+    Collection<PortInstance> getOutputPorts();
 
     /**
      * @return the ports of the actor
      */
     Collection<? extends PortInstance> getPorts();
-
-
-    /**
-     * @return the input ports of the actor
-     */
-    Collection<? extends PortInstance> getInputPorts();
-
-    /**
-     * @return the output ports of the actor
-     */
-    Collection<? extends PortInstance> getOutputPorts();
 
     /**
      * @param name a port name

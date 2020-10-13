@@ -43,7 +43,7 @@ public class TychoActorInstance implements ActorInstance {
     }
 
     @Override
-    public String getInstanceName() {
+    public String getName() {
         return instance.getInstanceName();
     }
 
@@ -102,6 +102,6 @@ public class TychoActorInstance implements ActorInstance {
 
     @Override
     public String toString() {
-        return getInstanceName();
+        return getName();
     }
 }

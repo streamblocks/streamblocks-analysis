@@ -61,7 +61,7 @@ public class TestArtNetworkDescriptionReader {
 
             System.out.println("\nNetwork: " + network.getName());
             for (ActorInstance a : network.getActors()) {
-                System.out.println("  actor " + a.getInstanceName());
+                System.out.println("  actor " + a.getName());
             }
             System.out.println("Connections:");
             for (Connection c : network.getConnections()) {

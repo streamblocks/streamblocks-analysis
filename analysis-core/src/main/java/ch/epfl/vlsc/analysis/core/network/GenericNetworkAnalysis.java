@@ -97,7 +97,7 @@ public class GenericNetworkAnalysis {
 
 	public ActorInstance getActorInstance(String n) {
 		for (ActorInstance actor : network.getActors())
-			if (actor.getInstanceName().equals(n))
+			if (actor.getName().equals(n))
 				return actor;
 		return null;
 	}

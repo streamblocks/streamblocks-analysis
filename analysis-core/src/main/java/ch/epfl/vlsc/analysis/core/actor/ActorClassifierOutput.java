@@ -53,7 +53,7 @@ public class ActorClassifierOutput {
     public void print(GenericActorAnalysis analysis) {
         mOut.println();
         ActorInstance actor = analysis.getActor();
-        mOut.println("actor " + actor.getInstanceName());
+        mOut.println("actor " + actor.getName());
         if (analysis != null) {
             mOut.println("executes indefinitely:   " + (analysis.executesIndefinitely() ? "yes" : "no/perhaps"));
             if (!analysis.executesIndefinitely()) {
@@ -87,11 +87,11 @@ public class ActorClassifierOutput {
     }
 
     public void print(McdfActorAnalysis analysis) {
-        mOut.println(analysis.getActor().getInstanceName() + " : " + analysis.getMcdfActorInstanceTypeAsString());
+        mOut.println(analysis.getActor().getName() + " : " + analysis.getMcdfActorInstanceTypeAsString());
     }
 
     public void print(ScenarioAwareActorAnalysis analysis) {
-        mOut.println(analysis.getActor().getInstanceName() + " : " + analysis.getScenarioAwareActorInstanceTypeAsString());
+        mOut.println(analysis.getActor().getName() + " : " + analysis.getScenarioAwareActorInstanceTypeAsString());
     }
 
     private void println(Collection<State> states) {
