@@ -10,7 +10,12 @@ import ch.epfl.vlsc.configuration.ConfigurationManager;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class XcfConfiguration {
     private final String name;
@@ -54,8 +59,13 @@ public class XcfConfiguration {
             VanillaPortInstance consumerPort = new VanillaPortInstance(sourceInstance, sourcePort, PortInstance.Direction.IN);
             VanillaPortInstance producerPort = new VanillaPortInstance(targetInstance, targetPort, PortInstance.Direction.OUT);
 
-            sourceInstance.getInputPorts().add(consumerPort);
-            targetInstance.getOutputPorts().add(producerPort);
+            if (sourceInstance.getPort(source) == null) {
+                sourceInstance.getInputPorts().add(consumerPort);
+            }
+
+            if (targetInstance.getPort(target) == null) {
+                targetInstance.getOutputPorts().add(producerPort);
+            }
 
             VanillaConnection connection = new VanillaConnection(producerPort, consumerPort);
 
@@ -70,15 +80,15 @@ public class XcfConfiguration {
         }
     }
 
-    public int nbrPartitions(){
+    public int nbrPartitions() {
         return partitions.size();
     }
 
-    public int nbrConnections(){
+    public int nbrConnections() {
         return connections.size();
     }
 
-    public List<ConfigurationPartition> getPartitions(){
+    public List<ConfigurationPartition> getPartitions() {
         return partitions;
     }
 }

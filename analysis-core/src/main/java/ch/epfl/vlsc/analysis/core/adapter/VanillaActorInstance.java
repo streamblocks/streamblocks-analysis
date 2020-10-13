@@ -47,10 +47,10 @@ import java.util.Map;
 
 public class VanillaActorInstance implements ActorInstance {
 
-    private String mInstanceName;
-    private Collection<PortInstance> mInputPorts;
-    private Collection<PortInstance> mOutputPorts;
-    private Collection<PortInstance> mPorts;
+    private final String mInstanceName;
+    private final Collection<PortInstance> mInputPorts;
+    private final Collection<PortInstance> mOutputPorts;
+    private final Collection<PortInstance> mPorts;
 
     public VanillaActorInstance(String instanceName) {
         mInstanceName = instanceName;
@@ -81,7 +81,17 @@ public class VanillaActorInstance implements ActorInstance {
 
     @Override
     public PortInstance getPort(String name) {
-        // TODO Auto-generated method stub
+        for (PortInstance port : mInputPorts) {
+            if (port.getName().equals(name)) {
+                return port;
+            }
+        }
+        for (PortInstance port : mOutputPorts) {
+            if (port.getName().equals(name)) {
+                return port;
+            }
+        }
+
         return null;
     }
 
