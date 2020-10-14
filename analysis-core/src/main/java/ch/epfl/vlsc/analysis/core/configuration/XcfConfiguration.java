@@ -56,26 +56,30 @@ public class XcfConfiguration {
             ActorInstance sourceInstance = mNameActorInstance.get(source);
             ActorInstance targetInstance = mNameActorInstance.get(target);
 
-            VanillaPortInstance consumerPort = new VanillaPortInstance(sourceInstance, sourcePort, PortInstance.Direction.IN);
-            VanillaPortInstance producerPort = new VanillaPortInstance(targetInstance, targetPort, PortInstance.Direction.OUT);
+            VanillaPortInstance sourcePortProducer = new VanillaPortInstance(sourceInstance, sourcePort, PortInstance.Direction.OUT);
+            VanillaPortInstance targetPortConsumer = new VanillaPortInstance(targetInstance, targetPort, PortInstance.Direction.IN);
 
             if (sourceInstance.getPort(source) == null) {
-                sourceInstance.getInputPorts().add(consumerPort);
+                sourceInstance.getOutputPorts().add(sourcePortProducer);
             }
 
             if (targetInstance.getPort(target) == null) {
-                targetInstance.getOutputPorts().add(producerPort);
+                targetInstance.getInputPorts().add(targetPortConsumer);
             }
 
-            VanillaConnection connection = new VanillaConnection(producerPort, consumerPort);
+            mNameActorInstance.put(source, sourceInstance);
+            mNameActorInstance.put(target, targetInstance);
+
+            VanillaConnection connection = new VanillaConnection(sourcePortProducer, targetPortConsumer);
 
             connections.add(connection);
 
         }
 
+
         // -- Create partitions
         for (Configuration.Partitioning.Partition partition : configuration.getPartitioning().getPartition()) {
-            ConfigurationPartition cPartition = new ConfigurationPartition(connections, partition);
+            ConfigurationPartition cPartition = new ConfigurationPartition(mNameActorInstance, connections, partition);
             partitions.add(partition.getId(), cPartition);
         }
     }

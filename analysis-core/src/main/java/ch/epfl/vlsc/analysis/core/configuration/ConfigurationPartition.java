@@ -9,10 +9,7 @@ import ch.epfl.vlsc.analysis.core.air.Network;
 import ch.epfl.vlsc.analysis.core.air.PortInstance;
 import ch.epfl.vlsc.configuration.Configuration;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class ConfigurationPartition implements Network {
 
@@ -37,7 +34,7 @@ public class ConfigurationPartition implements Network {
         return connections;
     }
 
-    public ConfigurationPartition(Set<VanillaConnection> configurationConnections, Configuration.Partitioning.Partition partition) {
+    public ConfigurationPartition(Map<String, ActorInstance> mNameActorInstance, Set<VanillaConnection> configurationConnections, Configuration.Partitioning.Partition partition) {
         actors = new ArrayList<>();
         connections = new HashSet<>();
         inputConnections = new HashSet<>();
@@ -46,8 +43,7 @@ public class ConfigurationPartition implements Network {
         id = partition.getId();
 
         for (Configuration.Partitioning.Partition.Instance instance : partition.getInstance()) {
-            VanillaActorInstance actorInstance = new VanillaActorInstance(instance.getId());
-            actors.add(actorInstance);
+            actors.add(mNameActorInstance.get(instance.getId()));
         }
 
         for (VanillaConnection connection : configurationConnections) {
