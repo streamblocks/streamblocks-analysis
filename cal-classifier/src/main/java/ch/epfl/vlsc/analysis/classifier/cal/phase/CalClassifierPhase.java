@@ -4,7 +4,15 @@ import ch.epfl.vlsc.analysis.classifier.cal.adapter.TychoNetwork;
 import ch.epfl.vlsc.analysis.core.actor.GenericActorAnalysis;
 import ch.epfl.vlsc.analysis.core.air.ActorInstance;
 import ch.epfl.vlsc.analysis.core.air.Network;
-import ch.epfl.vlsc.analysis.core.network.*;
+import ch.epfl.vlsc.analysis.core.network.GenericNetworkAnalysis;
+import ch.epfl.vlsc.analysis.core.network.McdfNetworkAnalysis;
+import ch.epfl.vlsc.analysis.core.network.NetworkClassifierOutput;
+import ch.epfl.vlsc.analysis.core.network.ScenarioAwareNetworkAnalysis;
+import ch.epfl.vlsc.analysis.core.network.SneakyNetworkAnalyzer;
+import ch.epfl.vlsc.analysis.core.visualization.GenericNetworkController;
+import ch.epfl.vlsc.analysis.core.visualization.NetworkController;
+import ch.epfl.vlsc.analysis.core.visualization.NetworkView;
+import com.mxgraph.view.mxGraph;
 import se.lth.cs.tycho.compiler.CompilationTask;
 import se.lth.cs.tycho.compiler.Compiler;
 import se.lth.cs.tycho.compiler.Context;
@@ -15,6 +23,7 @@ import se.lth.cs.tycho.settings.EnumSetting;
 import se.lth.cs.tycho.settings.ListSetting;
 import se.lth.cs.tycho.settings.Setting;
 
+import java.awt.*;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -103,6 +112,16 @@ public class CalClassifierPhase implements Phase {
                     break;
             }
         }
+
+        mxGraph graph = new mxGraph();
+        NetworkView view = new NetworkView(graph);
+        NetworkController ctrl = new GenericNetworkController(view);
+        view.setPreferredSize(new Dimension(800, 600));
+        ctrl.setNetwork(tychoNetwork);
+        ctrl.createFrame();
+        view.zoomToFit();
+
+
         return null;
     }
 
