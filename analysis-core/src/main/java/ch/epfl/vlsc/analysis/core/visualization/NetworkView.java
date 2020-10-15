@@ -191,6 +191,8 @@ public class NetworkView extends CustomGraphComponent {
                 // else: don't create parallel edges in network view
             }
         } finally {
+            graph.getStylesheet().getDefaultEdgeStyle().put(mxConstants.STYLE_BENDABLE, "1");
+            graph.getStylesheet().getDefaultVertexStyle().put(mxConstants.STYLE_ROUNDED, "1");
             graph.getModel().endUpdate();
         }
     }

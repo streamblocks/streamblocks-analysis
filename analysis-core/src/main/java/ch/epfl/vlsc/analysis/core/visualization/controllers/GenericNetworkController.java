@@ -1,10 +1,11 @@
-package ch.epfl.vlsc.analysis.core.visualization;
+package ch.epfl.vlsc.analysis.core.visualization.controllers;
 
 import ch.epfl.vlsc.analysis.core.actor.GenericActorAnalysis;
 import ch.epfl.vlsc.analysis.core.air.ActorInstance;
 import ch.epfl.vlsc.analysis.core.air.Network;
 import ch.epfl.vlsc.analysis.core.network.GenericNetworkAnalysis;
 import ch.epfl.vlsc.analysis.core.network.SneakyNetworkAnalyzer;
+import ch.epfl.vlsc.analysis.core.visualization.NetworkView;
 import ch.epfl.vlsc.analysis.core.visualization.util.ColorCodeLegend;
 import ch.epfl.vlsc.analysis.core.visualization.util.GuiAction;
 
