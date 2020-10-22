@@ -5,7 +5,7 @@ import ch.epfl.vlsc.analysis.core.air.ActorInstance;
 import ch.epfl.vlsc.analysis.core.air.Network;
 import ch.epfl.vlsc.analysis.core.network.McdfNetworkAnalysis;
 import ch.epfl.vlsc.analysis.core.network.SneakyNetworkAnalyzer;
-import ch.epfl.vlsc.analysis.core.visualization.NetworkView;
+import ch.epfl.vlsc.analysis.core.visualization.view.NetworkView;
 import ch.epfl.vlsc.analysis.core.visualization.util.ColorCodeLegend;
 import ch.epfl.vlsc.analysis.core.visualization.util.GuiAction;
 

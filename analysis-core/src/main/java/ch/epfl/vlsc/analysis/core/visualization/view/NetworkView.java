@@ -1,4 +1,4 @@
-package ch.epfl.vlsc.analysis.core.visualization;
+package ch.epfl.vlsc.analysis.core.visualization.view;
 
 
 import ch.epfl.vlsc.analysis.core.air.ActorInstance;
@@ -178,7 +178,7 @@ public class NetworkView extends CustomGraphComponent {
         try {
             int i = 0;
             for (ActorInstance actor : network.getActors()) {
-                Object cell = graph.insertVertex(parent, null, actor.getName(), 20 + 50 * i, 20 + 100 * i, 80, 30);
+                Object cell = graph.insertVertex(parent, null, actor.getName(), 20 + 50 * i, 20 + 100 * i, 150, 50);
                 mActor2Cell.put(actor, cell);
                 mCell2Actor.put(cell, actor);
             }
@@ -191,8 +191,11 @@ public class NetworkView extends CustomGraphComponent {
                 // else: don't create parallel edges in network view
             }
         } finally {
-            graph.getStylesheet().getDefaultEdgeStyle().put(mxConstants.STYLE_BENDABLE, "1");
+            graph.getStylesheet().getDefaultEdgeStyle().put(mxConstants.STYLE_ROUNDED, "1");
+            graph.getStylesheet().getDefaultEdgeStyle().put(mxConstants.EDGESTYLE_ORTHOGONAL, "1");
             graph.getStylesheet().getDefaultVertexStyle().put(mxConstants.STYLE_ROUNDED, "1");
+            graph.getStylesheet().getDefaultVertexStyle().put(mxConstants.STYLE_FONTSIZE, "15");
+            //graph.getStylesheet().getDefaultVertexStyle().put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
             graph.getModel().endUpdate();
         }
     }

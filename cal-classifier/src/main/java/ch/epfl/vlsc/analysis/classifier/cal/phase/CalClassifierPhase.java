@@ -9,7 +9,7 @@ import ch.epfl.vlsc.analysis.core.network.McdfNetworkAnalysis;
 import ch.epfl.vlsc.analysis.core.network.NetworkClassifierOutput;
 import ch.epfl.vlsc.analysis.core.network.ScenarioAwareNetworkAnalysis;
 import ch.epfl.vlsc.analysis.core.network.SneakyNetworkAnalyzer;
-import ch.epfl.vlsc.analysis.core.visualization.NetworkView;
+import ch.epfl.vlsc.analysis.core.visualization.view.NetworkView;
 import ch.epfl.vlsc.analysis.core.visualization.controllers.GenericNetworkController;
 import ch.epfl.vlsc.analysis.core.visualization.controllers.NetworkController;
 import com.mxgraph.view.mxGraph;

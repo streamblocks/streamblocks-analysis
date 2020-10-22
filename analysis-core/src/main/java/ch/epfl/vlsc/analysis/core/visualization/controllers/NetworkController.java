@@ -1,7 +1,7 @@
 package ch.epfl.vlsc.analysis.core.visualization.controllers;
 
 import ch.epfl.vlsc.analysis.core.air.Network;
-import ch.epfl.vlsc.analysis.core.visualization.NetworkView;
+import ch.epfl.vlsc.analysis.core.visualization.view.NetworkView;
 import ch.epfl.vlsc.analysis.core.visualization.util.GuiAction;
 import ch.epfl.vlsc.analysis.core.visualization.util.GuiActionKit;
 import ch.epfl.vlsc.analysis.core.visualization.util.Zoomable.ZoomInAction;
