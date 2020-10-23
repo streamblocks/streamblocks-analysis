@@ -1,7 +1,10 @@
-package ch.epfl.vlsc.analysis.core.configuration;
+package ch.epfl.vlsc.analysis.core.partitioning;
 
-import ch.epfl.vlsc.analysis.core.adapter.VanillaConnection;
 import ch.epfl.vlsc.analysis.core.air.ActorInstance;
+import ch.epfl.vlsc.analysis.core.air.Connection;
+import ch.epfl.vlsc.analysis.core.configuration.BiPartitionXcfWriter;
+import ch.epfl.vlsc.analysis.core.configuration.Partition;
+import ch.epfl.vlsc.analysis.core.configuration.XcfInitialBiConfiguration;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -11,11 +14,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-public class XcfRandomBiPartition {
+public class RandomBiPartition {
 
 
     public static void main(String[] args) {
-        XcfRandomBiPartition randomBiPartition = new XcfRandomBiPartition();
+        RandomBiPartition randomBiPartition = new RandomBiPartition();
         randomBiPartition.read(args);
     }
 
@@ -48,15 +51,17 @@ public class XcfRandomBiPartition {
 
             List<ActorInstance> actorInstances = configuration.getInstances();
 
-            Set<VanillaConnection> connections = configuration.getConnections();
+            Set<Connection> connections = configuration.getConnections();
 
             BitSet initial = configuration.getPartitionBitSet();
+            System.out.println(initial.size());
 
             //printBits("Initial Partitioning:", initial);
             int found = 0;
             for (int times = 0; times < 500000; times++) {
                 Random r = new Random();
                 BitSet random = getBits(r, initial.size());
+                System.out.println(random.size());
                 // -- Force instances on partition 0 to be in the random too
                 for (int i = 0; i < initial.size(); i++) {
                     if (!initial.get(i)) {

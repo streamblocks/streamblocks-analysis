@@ -2,6 +2,7 @@ package ch.epfl.vlsc.analysis.core.configuration;
 
 import ch.epfl.vlsc.analysis.core.adapter.VanillaConnection;
 import ch.epfl.vlsc.analysis.core.air.ActorInstance;
+import ch.epfl.vlsc.analysis.core.air.Connection;
 import ch.epfl.vlsc.configuration.Configuration;
 import ch.epfl.vlsc.configuration.ConfigurationManager;
 
@@ -14,10 +15,10 @@ public class BiPartitionXcfWriter {
     private final String networkName;
     private final List<ActorInstance> instancesInZero;
     private final List<ActorInstance> instancesInOne;
-    private final Set<VanillaConnection> connections;
+    private final Set<Connection> connections;
 
 
-    public BiPartitionXcfWriter(String networkName, List<ActorInstance> instancesInZero, List<ActorInstance> instancesInOne, Set<VanillaConnection> connections) {
+    public BiPartitionXcfWriter(String networkName, List<ActorInstance> instancesInZero, List<ActorInstance> instancesInOne, Set<Connection> connections) {
         this.networkName = networkName;
         this.instancesInZero = instancesInZero;
         this.instancesInOne = instancesInOne;
@@ -86,12 +87,12 @@ public class BiPartitionXcfWriter {
         // -- Create connections
 
         Configuration.Connections xcfConnections = new Configuration.Connections();
-        for (VanillaConnection vanillaConnection : connections) {
+        for (Connection vanillaConnection : connections) {
             Configuration.Connections.FifoConnection fifoConnection = new Configuration.Connections.FifoConnection();
             fifoConnection.setSize(4096);
-            fifoConnection.setSource(vanillaConnection.getFirst().getName());
+            fifoConnection.setSource(((VanillaConnection) vanillaConnection).getFirst().getName());
             fifoConnection.setSourcePort(vanillaConnection.getConsumerPort().getName());
-            fifoConnection.setTarget(vanillaConnection.getSecond().getName());
+            fifoConnection.setTarget(((VanillaConnection) vanillaConnection).getSecond().getName());
             fifoConnection.setTargetPort(vanillaConnection.getProducerPort().getName());
             xcfConnections.getFifoConnection().add(fifoConnection);
         }

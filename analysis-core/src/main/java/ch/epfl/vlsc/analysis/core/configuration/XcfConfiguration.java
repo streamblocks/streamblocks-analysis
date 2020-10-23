@@ -2,8 +2,11 @@ package ch.epfl.vlsc.analysis.core.configuration;
 
 import ch.epfl.vlsc.analysis.core.adapter.VanillaActorInstance;
 import ch.epfl.vlsc.analysis.core.adapter.VanillaConnection;
+import ch.epfl.vlsc.analysis.core.adapter.VanillaNetwork;
 import ch.epfl.vlsc.analysis.core.adapter.VanillaPortInstance;
 import ch.epfl.vlsc.analysis.core.air.ActorInstance;
+import ch.epfl.vlsc.analysis.core.air.Connection;
+import ch.epfl.vlsc.analysis.core.air.Network;
 import ch.epfl.vlsc.analysis.core.air.PortInstance;
 import ch.epfl.vlsc.configuration.Configuration;
 import ch.epfl.vlsc.configuration.ConfigurationManager;
@@ -20,9 +23,13 @@ import java.util.Set;
 public class XcfConfiguration {
     private final String name;
     private final List<ConfigurationPartition> partitions;
-    private final Set<VanillaConnection> connections;
+    private final Set<Connection> connections;
     private final List<ActorInstance> instances;
     private final Map<String, ActorInstance> mNameActorInstance;
+
+    private final Map<Connection, Long> connectionBandwidth;
+
+    private final VanillaNetwork network;
 
     public XcfConfiguration(File xcfFile) throws JAXBException {
         ConfigurationManager manager = new ConfigurationManager(xcfFile);
@@ -36,6 +43,8 @@ public class XcfConfiguration {
         mNameActorInstance = new HashMap<>();
 
         connections = new HashSet<>();
+
+        connectionBandwidth = new HashMap<>();
 
         // -- Add all instances of partitions
         for (Configuration.Partitioning.Partition partition : configuration.getPartitioning().getPartition()) {
@@ -52,6 +61,7 @@ public class XcfConfiguration {
             String target = fifoConnection.getTarget();
             String sourcePort = fifoConnection.getSourcePort();
             String targetPort = fifoConnection.getTargetPort();
+
 
             ActorInstance sourceInstance = mNameActorInstance.get(source);
             ActorInstance targetInstance = mNameActorInstance.get(target);
@@ -74,6 +84,12 @@ public class XcfConfiguration {
 
             connections.add(connection);
 
+            if (fifoConnection.getBandwidth() != null) {
+                connectionBandwidth.put(connection, fifoConnection.getBandwidth().longValue());
+            } else {
+                connectionBandwidth.put(connection, 1L);
+            }
+
         }
 
 
@@ -82,6 +98,9 @@ public class XcfConfiguration {
             ConfigurationPartition cPartition = new ConfigurationPartition(mNameActorInstance, connections, partition);
             partitions.add(partition.getId(), cPartition);
         }
+
+        // -- Network
+        network = new VanillaNetwork(name, instances, connections);
     }
 
     public int nbrPartitions() {
@@ -94,5 +113,13 @@ public class XcfConfiguration {
 
     public List<ConfigurationPartition> getPartitions() {
         return partitions;
+    }
+
+    public Network getNetwork() {
+        return network;
+    }
+
+    public Map<Connection, Long> getConnectionBandwidth() {
+        return connectionBandwidth;
     }
 }

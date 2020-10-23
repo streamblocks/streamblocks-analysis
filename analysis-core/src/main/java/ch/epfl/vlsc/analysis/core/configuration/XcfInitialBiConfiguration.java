@@ -4,6 +4,7 @@ import ch.epfl.vlsc.analysis.core.adapter.VanillaActorInstance;
 import ch.epfl.vlsc.analysis.core.adapter.VanillaConnection;
 import ch.epfl.vlsc.analysis.core.adapter.VanillaPortInstance;
 import ch.epfl.vlsc.analysis.core.air.ActorInstance;
+import ch.epfl.vlsc.analysis.core.air.Connection;
 import ch.epfl.vlsc.analysis.core.air.PortInstance;
 import ch.epfl.vlsc.configuration.Configuration;
 import ch.epfl.vlsc.configuration.ConfigurationManager;
@@ -21,7 +22,7 @@ import java.util.Set;
 public class XcfInitialBiConfiguration {
     private final String name;
     private final Map<Integer, List<ActorInstance>> partitions;
-    private final Set<VanillaConnection> connections;
+    private final Set<Connection> connections;
     private final List<ActorInstance> instances;
     private final Map<String, ActorInstance> mNameActorInstance;
 
@@ -109,7 +110,7 @@ public class XcfInitialBiConfiguration {
         return instances;
     }
 
-    public Set<VanillaConnection> getConnections() {
+    public Set<Connection> getConnections() {
         return connections;
     }
 

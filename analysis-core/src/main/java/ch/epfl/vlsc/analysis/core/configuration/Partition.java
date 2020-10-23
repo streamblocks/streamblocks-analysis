@@ -1,6 +1,5 @@
 package ch.epfl.vlsc.analysis.core.configuration;
 
-import ch.epfl.vlsc.analysis.core.adapter.VanillaConnection;
 import ch.epfl.vlsc.analysis.core.air.ActorInstance;
 import ch.epfl.vlsc.analysis.core.air.Connection;
 import ch.epfl.vlsc.analysis.core.air.PortInstance;
@@ -21,7 +20,7 @@ public class Partition {
 
     public Partition(int id,
                      List<ActorInstance> actorInstances,
-                     Set<VanillaConnection> configurationConnections) {
+                     Set<Connection> configurationConnections) {
 
         actors = new ArrayList<>();
         connections = new HashSet<>();
@@ -32,7 +31,7 @@ public class Partition {
 
         actors.addAll(actorInstances);
 
-        for (VanillaConnection connection : configurationConnections) {
+        for (Connection connection : configurationConnections) {
             PortInstance producerPort = connection.getProducerPort();
             PortInstance consumerPort = connection.getConsumerPort();
 

@@ -119,5 +119,12 @@ public class VanillaActorInstance implements ActorInstance {
     public String getAnnotationArgumentValue(String annotation, String argId) {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "VanillaActorInstance{" +
+                "mInstanceName='" + mInstanceName + '\'' +
+                '}';
+    }
 }
 
