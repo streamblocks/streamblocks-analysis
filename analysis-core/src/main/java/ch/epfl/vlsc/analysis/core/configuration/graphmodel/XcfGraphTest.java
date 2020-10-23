@@ -33,15 +33,15 @@ public class XcfGraphTest {
         try {
             XcfGraph xcfGraph = new XcfGraph(input);
 
-            Graph<String, ConnectionEdge> graph = xcfGraph.getGraph();
+            Graph<InstanceVertex, ConnectionEdge> graph = xcfGraph.getGraph();
 
-            MinimumSTCutAlgorithm<String, ConnectionEdge> minimumSTCutAlgorithm = new EdmondsKarpMFImpl<String, ConnectionEdge>(graph);
+            MinimumSTCutAlgorithm<InstanceVertex, ConnectionEdge> minimumSTCutAlgorithm = new EdmondsKarpMFImpl<InstanceVertex, ConnectionEdge>(graph);
 
             System.out.println(minimumSTCutAlgorithm.getCutCapacity());
 
-            StrongConnectivityAlgorithm<String, ConnectionEdge> scAlg =
-                    new KosarajuStrongConnectivityInspector<>(graph);
-            List<Graph<String, ConnectionEdge>> stronglyConnectedSubgraphs =
+            StrongConnectivityAlgorithm<InstanceVertex, ConnectionEdge> scAlg =
+                    new KosarajuStrongConnectivityInspector<InstanceVertex, ConnectionEdge>(graph);
+            List<Graph<InstanceVertex, ConnectionEdge>> stronglyConnectedSubgraphs =
                     scAlg.getStronglyConnectedComponents();
 /*
             // prints the strongly connected components

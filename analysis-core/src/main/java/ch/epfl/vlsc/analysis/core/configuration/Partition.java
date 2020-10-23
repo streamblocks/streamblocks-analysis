@@ -1,20 +1,17 @@
 package ch.epfl.vlsc.analysis.core.configuration;
 
-import ch.epfl.vlsc.analysis.core.adapter.IncidentConnectionSet;
 import ch.epfl.vlsc.analysis.core.adapter.VanillaConnection;
 import ch.epfl.vlsc.analysis.core.air.ActorInstance;
 import ch.epfl.vlsc.analysis.core.air.Connection;
-import ch.epfl.vlsc.analysis.core.air.Network;
 import ch.epfl.vlsc.analysis.core.air.PortInstance;
-import ch.epfl.vlsc.configuration.Configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
-public class ConfigurationPartition implements Network {
+public class Partition {
 
     private final Collection<ActorInstance> actors;
     private final Set<Connection> connections;
@@ -22,34 +19,18 @@ public class ConfigurationPartition implements Network {
     private final Set<Connection> outputConnections;
     private final int id;
 
+    public Partition(int id,
+                     List<ActorInstance> actorInstances,
+                     Set<VanillaConnection> configurationConnections) {
 
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    public Collection<ActorInstance> getActors() {
-        return actors;
-    }
-
-    @Override
-    public Collection<? extends Connection> getConnections() {
-        return connections;
-    }
-
-    public ConfigurationPartition(Map<String, ActorInstance> mNameActorInstance,
-                                  Set<VanillaConnection> configurationConnections,
-                                  Configuration.Partitioning.Partition partition) {
         actors = new ArrayList<>();
         connections = new HashSet<>();
         inputConnections = new HashSet<>();
         outputConnections = new HashSet<>();
 
-        id = partition.getId();
+        this.id = id;
 
-        for (Configuration.Partitioning.Partition.Instance instance : partition.getInstance()) {
-            actors.add(mNameActorInstance.get(instance.getId()));
-        }
+        actors.addAll(actorInstances);
 
         for (VanillaConnection connection : configurationConnections) {
             PortInstance producerPort = connection.getProducerPort();
@@ -66,16 +47,6 @@ public class ConfigurationPartition implements Network {
                 inputConnections.add(connection);
             }
         }
-
-    }
-
-    public Collection<Connection> getInputConnections() {
-        return inputConnections;
-    }
-
-    @Override
-    public Collection<? extends Connection> getIncidentConnections(PortInstance port) {
-        return new IncidentConnectionSet(connections, port);
     }
 
     public Collection<Connection> getOutputConnections() {
@@ -91,23 +62,27 @@ public class ConfigurationPartition implements Network {
         return false;
     }
 
+    public int getId() {
+        return id;
+    }
 
-
-    public int nbrConnections(){
+    public int nbrConnections() {
         return connections.size();
     }
 
-    public int nbrInputConnections(){
+    public int nbrInputConnections() {
         return inputConnections.size();
     }
 
-    public int nbrOutputConnections(){
+    public int nbrOutputConnections() {
         return outputConnections.size();
     }
 
-    public int nbrInstances(){
+    public int nbrInstances() {
         return actors.size();
     }
 
-
+    public Collection<Connection> getInputConnections() {
+        return inputConnections;
+    }
 }

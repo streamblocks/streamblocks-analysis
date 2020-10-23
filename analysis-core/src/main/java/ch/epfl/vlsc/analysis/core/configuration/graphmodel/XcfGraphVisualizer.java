@@ -1,6 +1,7 @@
 package ch.epfl.vlsc.analysis.core.configuration.graphmodel;
 
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import org.jgrapht.Graph;
@@ -12,6 +13,7 @@ import javax.swing.*;
 import javax.xml.bind.JAXBException;
 import java.awt.*;
 import java.io.File;
+import java.util.Map;
 
 public class XcfGraphVisualizer extends
         JApplet {
@@ -20,9 +22,9 @@ public class XcfGraphVisualizer extends
 
     private static final Dimension DEFAULT_SIZE = new Dimension(530, 320);
 
-    private JGraphXAdapter<String, ConnectionEdge> jgxAdapter;
+    private JGraphXAdapter<InstanceVertex, ConnectionEdge> jgxAdapter;
 
-    private Graph<String, ConnectionEdge> graph;
+    private Graph<InstanceVertex, ConnectionEdge> graph;
 
     private void printSynopsis() {
         System.err.println("Usage: XcfGraphTest configuration.xcf");
@@ -34,8 +36,7 @@ public class XcfGraphVisualizer extends
      *
      * @param args command line arguments
      */
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         XcfGraphVisualizer applet = new XcfGraphVisualizer();
         applet.read(args);
         applet.init();
@@ -67,10 +68,9 @@ public class XcfGraphVisualizer extends
 
 
     @Override
-    public void init()
-    {
+    public void init() {
         // create a JGraphT graph
-        ListenableGraph<String, ConnectionEdge> g =
+        ListenableGraph<InstanceVertex, ConnectionEdge> g =
                 new DefaultListenableGraph<>(graph);
 
         // create a visualization using JGraph, via an adapter
@@ -82,6 +82,7 @@ public class XcfGraphVisualizer extends
 
         jgxAdapter.getStylesheet().getDefaultVertexStyle().put(mxConstants.STYLE_ROUNDED, "1");
 
+
         mxGraphComponent component = new mxGraphComponent(jgxAdapter);
         component.setConnectable(false);
         component.getGraph().setAllowDanglingEdges(false);
@@ -90,13 +91,18 @@ public class XcfGraphVisualizer extends
         // positioning via jgraphx layouts
         mxHierarchicalLayout layout = new mxHierarchicalLayout(jgxAdapter);
         layout.setOrientation(SwingConstants.WEST);
-        //layout.setUseBoundingBox(false);
-        //layout.setEdgeRouting(true);
-        //layout.setLevelDistance(60);
-        //layout.setNodeDistance(60);
+
+        Map<InstanceVertex, mxICell> instanceToCell = jgxAdapter.getVertexToCellMap();
+        for (InstanceVertex instance : instanceToCell.keySet()) {
+            mxICell cell = instanceToCell.get(instance);
+            Object[] cells = {cell};
+            if (instance.getPartition() == 0) {
+                jgxAdapter.setCellStyles(mxConstants.STYLE_FILLCOLOR, "#40C040", cells);
+            }
+        }
+
 
         layout.execute(jgxAdapter.getDefaultParent());
-        // that's all there is to it!...
     }
 
 }

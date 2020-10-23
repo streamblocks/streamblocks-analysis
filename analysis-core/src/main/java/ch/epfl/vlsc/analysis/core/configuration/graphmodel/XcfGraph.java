@@ -7,23 +7,31 @@ import org.jgrapht.graph.DirectedPseudograph;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class XcfGraph {
     private final String name;
 
-    private final Graph<String, ConnectionEdge> graph;
+    private final Graph<InstanceVertex, ConnectionEdge> graph;
+
+    private final Map<String, InstanceVertex> instanceVertexes;
 
     public XcfGraph(File xcfFile) throws JAXBException {
         ConfigurationManager manager = new ConfigurationManager(xcfFile);
         Configuration configuration = manager.getConfiguration();
         name = configuration.getNetwork().getId();
 
-        graph = new DirectedPseudograph<String, ConnectionEdge>(ConnectionEdge.class);
+        graph = new DirectedPseudograph<InstanceVertex, ConnectionEdge>(ConnectionEdge.class);
+
+        instanceVertexes = new HashMap<>();
 
         // -- Add all nodes instances
         for (Configuration.Partitioning.Partition partition : configuration.getPartitioning().getPartition()) {
             for (Configuration.Partitioning.Partition.Instance instance : partition.getInstance()) {
-                graph.addVertex(instance.getId());
+                InstanceVertex instanceVertex = new InstanceVertex(instance.getId(), partition.getId());
+                graph.addVertex(instanceVertex);
+                instanceVertexes.put(instance.getId(), instanceVertex);
             }
         }
 
@@ -34,11 +42,11 @@ public class XcfGraph {
             String sourcePort = fifoConnection.getSourcePort();
             String targetPort = fifoConnection.getTargetPort();
 
-            graph.addEdge(source, target, new ConnectionEdge(source, sourcePort, target, targetPort));
+            graph.addEdge(instanceVertexes.get(source), instanceVertexes.get(target), new ConnectionEdge(source, sourcePort, target, targetPort));
         }
     }
 
-    public Graph<String, ConnectionEdge> getGraph() {
+    public Graph<InstanceVertex, ConnectionEdge> getGraph() {
         return graph;
     }
 

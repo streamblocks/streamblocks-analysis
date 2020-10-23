@@ -10,7 +10,7 @@ function readlink_rec {
 	fi
 }
 
-child=`dirname "$(readlink_rec $0)"`
+child=$(dirname "$(readlink_rec $0)")
 
 if [[ "$PWD" = $(readlink -f "${child}") ]];
 then
