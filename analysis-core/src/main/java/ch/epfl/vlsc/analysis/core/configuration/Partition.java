@@ -4,11 +4,7 @@ import ch.epfl.vlsc.analysis.core.air.ActorInstance;
 import ch.epfl.vlsc.analysis.core.air.Connection;
 import ch.epfl.vlsc.analysis.core.air.PortInstance;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Partition {
 
@@ -16,6 +12,11 @@ public class Partition {
     private final Set<Connection> connections;
     private final Set<Connection> inputConnections;
     private final Set<Connection> outputConnections;
+
+
+    private final Map<String, List<Connection>> inputPortConnections;
+    private final Map<String, List<Connection>> outputPortConnections;
+
     private final int id;
 
     public Partition(int id,
@@ -26,6 +27,8 @@ public class Partition {
         connections = new HashSet<>();
         inputConnections = new HashSet<>();
         outputConnections = new HashSet<>();
+        inputPortConnections = new HashMap<>();
+        outputPortConnections = new HashMap<>();
 
         this.id = id;
 
@@ -42,8 +45,27 @@ public class Partition {
                 connections.add(connection);
             } else if (isIncludedInTheNetwork(producerInstance) && !isIncludedInTheNetwork(consumerInstance)) {
                 outputConnections.add(connection);
+
+
+                String instancePort = producerInstance.getName() + ":" + producerPort.getName();
+                if (outputPortConnections.containsKey(instancePort)) {
+                    outputPortConnections.get(instancePort).add(connection);
+                } else {
+                    List<Connection> cons = new ArrayList<>();
+                    cons.add(connection);
+                    outputPortConnections.put(instancePort, cons);
+                }
+
             } else if (!isIncludedInTheNetwork(producerInstance) && isIncludedInTheNetwork(consumerInstance)) {
                 inputConnections.add(connection);
+                String instancePort = producerInstance.getName() + ":" + producerPort.getName();
+                if (inputPortConnections.containsKey(instancePort)) {
+                    inputPortConnections.get(instancePort).add(connection);
+                } else {
+                    List<Connection> cons = new ArrayList<>();
+                    cons.add(connection);
+                    inputPortConnections.put(instancePort, cons);
+                }
             }
         }
     }
@@ -70,11 +92,11 @@ public class Partition {
     }
 
     public int nbrInputConnections() {
-        return inputConnections.size();
+        return inputPortConnections.keySet().size();
     }
 
     public int nbrOutputConnections() {
-        return outputConnections.size();
+        return outputPortConnections.keySet().size();
     }
 
     public int nbrInstances() {
@@ -83,5 +105,9 @@ public class Partition {
 
     public Collection<Connection> getInputConnections() {
         return inputConnections;
+    }
+
+    public Collection<ActorInstance> getActors(){
+        return actors;
     }
 }

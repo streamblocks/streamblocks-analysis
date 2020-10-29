@@ -26,6 +26,8 @@ public class XcfGraphVisualizer extends
 
     private Graph<InstanceVertex, ConnectionEdge> graph;
 
+    private String fileName;
+
     private void printSynopsis() {
         System.err.println("Usage: XcfGraphTest configuration.xcf");
     }
@@ -43,7 +45,7 @@ public class XcfGraphVisualizer extends
 
         JFrame frame = new JFrame();
         frame.getContentPane().add(applet);
-        frame.setTitle("JGraphT Adapter to JGraphX Demo");
+        frame.setTitle(applet.fileName);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
@@ -60,6 +62,7 @@ public class XcfGraphVisualizer extends
 
         try {
             XcfGraph xcfGraph = new XcfGraph(input);
+            fileName = input.getName();
             graph = xcfGraph.getGraph();
         } catch (JAXBException e) {
             e.printStackTrace();

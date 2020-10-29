@@ -37,7 +37,7 @@ public class RandomBiPartition {
     }
 
     private void printSynopsis() {
-        System.err.println("Usage: XcfInformation configuration.xcf");
+        System.err.println("Usage: RandomBiPartition configuration.xcf");
     }
 
     public void read(String[] args) {
@@ -54,16 +54,13 @@ public class RandomBiPartition {
             Set<Connection> connections = configuration.getConnections();
 
             BitSet initial = configuration.getPartitionBitSet();
-            System.out.println(initial.size());
 
-            //printBits("Initial Partitioning:", initial);
             int found = 0;
-            for (int times = 0; times < 500000; times++) {
+            for (int times = 0; times < 10000000; times++) {
                 Random r = new Random();
                 BitSet random = getBits(r, initial.size());
-                System.out.println(random.size());
                 // -- Force instances on partition 0 to be in the random too
-                for (int i = 0; i < initial.size(); i++) {
+                for (int i = 0; i < initial.length(); i++) {
                     if (!initial.get(i)) {
                         random.set(i, false);
                     }
@@ -84,7 +81,7 @@ public class RandomBiPartition {
                 Partition partitionZero = new Partition(0, instancesInZero, connections);
                 //System.out.println("Nbr input :" + partitionZero.nbrInputConnections());
                 //System.out.println("Nbr output :" + partitionZero.nbrOutputConnections());
-                if (partitionZero.nbrInputConnections() + partitionZero.nbrOutputConnections() <= 30) {
+                if (partitionZero.nbrInputConnections() + partitionZero.nbrOutputConnections() <= 26) {
                     printBits(found + ": Random Partitioning: ", random);
                     BiPartitionXcfWriter writer = new BiPartitionXcfWriter(configuration.getName(), instancesInZero, instancesInOne, connections);
                     File xcfFile = new File("./" + configuration.getName() + "_random_" + found + ".xcf");

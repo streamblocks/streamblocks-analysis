@@ -50,4 +50,8 @@ public class XcfGraph {
         return graph;
     }
 
+    public String getName(){
+        return name;
+    }
+
 }

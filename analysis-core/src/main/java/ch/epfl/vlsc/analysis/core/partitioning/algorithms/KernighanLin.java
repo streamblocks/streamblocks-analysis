@@ -7,12 +7,7 @@ import ch.epfl.vlsc.analysis.core.air.PortInstance;
 import ch.epfl.vlsc.analysis.core.util.collections.Pair;
 import ch.epfl.vlsc.platformutils.utils.MathUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class KernighanLin {
     private final Map<Connection, Long> buffersCost;
@@ -23,6 +18,12 @@ public class KernighanLin {
         this.network = network;
         this.buffersCost = buffersCost;
         this.actorInstances = (Collection<ActorInstance>) network.getActors();
+    }
+
+    public static BitSet getBits(Random sr, int size) {
+        byte[] ar = new byte[(int) Math.ceil(size / 8F)];
+        sr.nextBytes(ar);
+        return BitSet.valueOf(ar).get(0, size);
     }
 
     public List<KlPartition> compute() {
@@ -39,7 +40,7 @@ public class KernighanLin {
         // compute initial set
         List<ActorInstance> setA = new ArrayList<>();
         List<ActorInstance> setB = new ArrayList<>();
-
+/*
         for (ActorInstance ActorInstance : actorInstances) {
             if (setA.size() <= setB.size()) {
                 setA.add(ActorInstance);
@@ -47,6 +48,20 @@ public class KernighanLin {
                 setB.add(ActorInstance);
             }
         }
+*/
+
+        Random r = new Random();
+        BitSet random = getBits(r, network.getActors().size());
+        List<ActorInstance> instances = new ArrayList<>(network.getActors());
+        // -- Get Instances on partition 0
+        for (int i = 0; i < actorInstances.size(); i++) {
+            if (random.get(i)) {
+                setA.add(instances.get(i));
+            } else {
+                setB.add(instances.get(i));
+            }
+        }
+
 
         long g = Long.MIN_VALUE;
         Swapper swapper = new Swapper(setA, setB);

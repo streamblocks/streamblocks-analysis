@@ -30,6 +30,8 @@ public class XcfInitialBiConfiguration {
 
     private final BitSet partitionBitSet;
 
+    private final List<Integer> partitionIds;
+
     public XcfInitialBiConfiguration(File xcfFile) throws JAXBException {
         ConfigurationManager manager = new ConfigurationManager(xcfFile);
         Configuration configuration = manager.getConfiguration();
@@ -45,6 +47,8 @@ public class XcfInitialBiConfiguration {
 
         mInstancePartition = new HashMap<>();
 
+        partitionIds = new ArrayList<>();
+
         // -- Add all instances of partitions
         for (Configuration.Partitioning.Partition partition : configuration.getPartitioning().getPartition()) {
             for (Configuration.Partitioning.Partition.Instance instance : partition.getInstance()) {
@@ -52,11 +56,13 @@ public class XcfInitialBiConfiguration {
                 instances.add(actorInstance);
                 mNameActorInstance.put(instance.getId(), actorInstance);
                 mInstancePartition.put(actorInstance, (int) partition.getId());
-
-                if (partitions.containsKey(instance.getId())) {
-                    partitions.get(partition.getId()).add(actorInstance);
+                Integer partId = (int) partition.getId();
+                if (partitions.containsKey(partId)) {
+                    partitions.get(partId).add(actorInstance);
                 } else {
-                    partitions.put((int) partition.getId(), new ArrayList<>());
+                    List<ActorInstance> instances = new ArrayList<>();
+                    instances.add(actorInstance);
+                    partitions.put(partId, instances);
                 }
             }
         }
@@ -65,6 +71,7 @@ public class XcfInitialBiConfiguration {
 
         for (ActorInstance actorInstance : instances) {
             partitionBitSet.set(instances.indexOf(actorInstance), mInstancePartition.get(actorInstance) == 1);
+            partitionIds.add(mInstancePartition.get(actorInstance) == 1 ? 1 : 0);
         }
 
         // -- Create all connections
@@ -120,5 +127,13 @@ public class XcfInitialBiConfiguration {
 
     public String getName() {
         return name;
+    }
+
+    public Map<Integer, List<ActorInstance>> getPartitions() {
+        return partitions;
+    }
+
+    public List<Integer> getPartitionIds(){
+        return partitionIds;
     }
 }
