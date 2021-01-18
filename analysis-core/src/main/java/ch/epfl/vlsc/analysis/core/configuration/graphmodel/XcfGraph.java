@@ -6,7 +6,9 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DirectedPseudograph;
 
 import javax.xml.bind.JAXBException;
+import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +19,8 @@ public class XcfGraph {
 
     private final Map<String, InstanceVertex> instanceVertexes;
 
+    private final Map<Integer, String> partitionColor;
+
     public XcfGraph(File xcfFile) throws JAXBException {
         ConfigurationManager manager = new ConfigurationManager(xcfFile);
         Configuration configuration = manager.getConfiguration();
@@ -26,14 +30,20 @@ public class XcfGraph {
 
         instanceVertexes = new HashMap<>();
 
+        partitionColor = new HashMap<>();
+
         // -- Add all nodes instances
+        int i =0;
         for (Configuration.Partitioning.Partition partition : configuration.getPartitioning().getPartition()) {
             for (Configuration.Partitioning.Partition.Instance instance : partition.getInstance()) {
-                InstanceVertex instanceVertex = new InstanceVertex(instance.getId(), partition.getId());
+                InstanceVertex instanceVertex = new InstanceVertex(String.valueOf(i), partition.getId());
                 graph.addVertex(instanceVertex);
                 instanceVertexes.put(instance.getId(), instanceVertex);
+                i++;
             }
+            partitionColor.put((int) partition.getId(), encodeColor(hashColor(partition)));
         }
+
 
         // -- Add all edges connection
         for (Configuration.Connections.FifoConnection fifoConnection : configuration.getConnections().getFifoConnection()) {
@@ -50,8 +60,38 @@ public class XcfGraph {
         return graph;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
+
+    public Map<Integer, String> getPartitionColor() {
+        return partitionColor;
+    }
+
+    /**
+     * Get an RGB color from object hash code
+     *
+     * @param value
+     * @return
+     */
+    private Color hashColor(Object value) {
+        if (value == null) {
+            return Color.WHITE.darker();
+        } else {
+            int r = 0xff - (Math.abs(1 + value.hashCode()) % 0xce);
+            int g = 0xff - (Math.abs(1 + value.hashCode()) % 0xdd);
+            int b = 0xff - (Math.abs(1 + value.hashCode()) % 0xec);
+            return new Color(r, g, b);
+        }
+    }
+
+    /**
+     * @return a hex Color string in the format #rrggbb.
+     */
+    public static String encodeColor(Color color) {
+        return "#" + String.format("%06x", color.getRGB() & 0xffffff);
+
+    }
+
 
 }
