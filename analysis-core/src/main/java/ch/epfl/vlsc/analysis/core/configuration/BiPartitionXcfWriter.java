@@ -88,13 +88,13 @@ public class BiPartitionXcfWriter {
 
         Configuration.Connections xcfConnections = new Configuration.Connections();
         for (Connection vanillaConnection : connections) {
-            Configuration.Connections.FifoConnection fifoConnection = new Configuration.Connections.FifoConnection();
+            Configuration.Connections.Connection fifoConnection = new Configuration.Connections.Connection();
             fifoConnection.setSize((long)4096);
             fifoConnection.setSource(((VanillaConnection) vanillaConnection).getFirst().getName());
             fifoConnection.setSourcePort(vanillaConnection.getConsumerPort().getName());
             fifoConnection.setTarget(((VanillaConnection) vanillaConnection).getSecond().getName());
             fifoConnection.setTargetPort(vanillaConnection.getProducerPort().getName());
-            xcfConnections.getFifoConnection().add(fifoConnection);
+            xcfConnections.getConnection().add(fifoConnection);
         }
 
         xcf.setConnections(xcfConnections);

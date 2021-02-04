@@ -75,7 +75,7 @@ public class XcfInitialBiConfiguration {
         }
 
         // -- Create all connections
-        for (Configuration.Connections.FifoConnection fifoConnection : configuration.getConnections().getFifoConnection()) {
+        for (Configuration.Connections.Connection fifoConnection : configuration.getConnections().getConnection()) {
             String source = fifoConnection.getSource();
             String target = fifoConnection.getTarget();
             String sourcePort = fifoConnection.getSourcePort();

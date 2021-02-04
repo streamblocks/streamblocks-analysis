@@ -77,7 +77,7 @@ public class XcfToDot {
             }
 
             // -- Add all edges connection
-            for (Configuration.Connections.FifoConnection fifoConnection : original.getConnections().getFifoConnection()) {
+            for (Configuration.Connections.Connection fifoConnection : original.getConnections().getConnection()) {
                 String source = fifoConnection.getSource();
                 String target = fifoConnection.getTarget();
 
